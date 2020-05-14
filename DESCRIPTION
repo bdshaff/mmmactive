@@ -1,0 +1,11 @@
+Package: mmmactive
+Type: Package
+Title: MSMP functionality under active development
+Version: 0.1.0
+Author: Ben Denis Shaffer
+Maintainer: The package maintainer <ben.shaffer@tbwachiat.com>
+Description: Set of function for MMM projects following the MSMP framework under active development.
+License: Proprietary: Do not distribute
+Encoding: UTF-8
+LazyData: true
+Imports: ggplot2, dplyr, tidyr, readr, purrr, tibble, stringr, forcats, lubridate, readxl, car
