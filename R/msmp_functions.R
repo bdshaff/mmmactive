@@ -29,6 +29,19 @@ activate_model_spec = function(mod_obj, input_file_ModelSpec){
   return(mod_obj)
 }
 
+SetDateRange = function(mod_obj, na.rm = TRUE){
+  mod_obj$data =
+    mod_obj$data %>%
+    filter(!!sym(mod_obj$Time) >= mod_obj$BeginDate,
+           !!sym(mod_obj$Time) <= mod_obj$EndDate)
+
+  if(na.rm){
+    mod_obj$data[is.na(mod_obj$data)] = 0
+  }
+
+  return(mod_obj)
+}
+
 Load_Data = function(obj, input_file_ModelData){
   datasheets = excel_sheets(input_file_ModelData)
 
