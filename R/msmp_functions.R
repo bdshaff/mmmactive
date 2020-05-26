@@ -101,7 +101,6 @@ Load_FitCurves = function(obj, input_file_ModelFitCurves){
 
 Decomp <- function(obj, incl_spent = FALSE) {
 
-
   x <- obj$data
   spec <- obj$spec
   b <- obj$Model$coefficients
@@ -531,7 +530,6 @@ AdStockPD <- function(data, i, p){
 
 Run_Model <- function(obj, Method = "Bayes"){
 
-
   spec <- obj$spec
   x <- obj$data
 
@@ -592,8 +590,6 @@ Run_Model <- function(obj, Method = "Bayes"){
 }
 
 my_bayes = function(formula, data, priors=NULL){
-
-
   big_number <- 10000           # for difuse priors
 
   DepVar <- all.vars(formula)[1]

@@ -1,6 +1,10 @@
+#' Plot_Resids
+#'
+#' @param obj - model object
+#' @param panel_name  - panel name
+#'
 
-
-Plot_Resids <- function(obj, panel_name){
+Plot_Resids = function(obj, panel_name){
 
   x <- obj$data
   cs = mod_obj$cs
