@@ -4,7 +4,7 @@
 \alias{Decomp}
 \title{Decomp}
 \usage{
-Decomp(obj, incl_spent = FALSE)
+Decomp(obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
 }
 \arguments{
 \item{obj}{- model object}

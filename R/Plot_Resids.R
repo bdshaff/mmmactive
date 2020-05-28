@@ -6,7 +6,7 @@
 
 Plot_Resids = function(obj, panel_name){
 
-  x <- obj$data
+  x = obj$data
   cs = mod_obj$cs
   ts = mod_obj$Time
 

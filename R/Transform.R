@@ -1,7 +1,7 @@
 #' Transform
 #'
 #' @param obj - model object
-#' @print - TRUE or FALSE
+#' @param print - TRUE or FALSE
 #'
 
 Transform = function(obj = NULL, print = TRUE){

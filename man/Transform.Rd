@@ -8,6 +8,8 @@ Transform(obj = NULL, print = TRUE)
 }
 \arguments{
 \item{obj}{- model object}
+
+\item{print}{- TRUE or FALSE}
 }
 \description{
 Transform
