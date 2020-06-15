@@ -406,7 +406,7 @@ AdResponse <- function(afGRPsMat, afCoeffsMat, params){
   nEffFreq <- params[1]
   nRecFreq <- params[2]
   nPeriod <- params[3]
-  fDecay <- params[4]
+  fDecay <- params[4]/100
 
   # Define output matrix size
   afGRPsMat = as.matrix(afGRPsMat)

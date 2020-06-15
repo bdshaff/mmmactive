@@ -35,7 +35,7 @@ TransformVar <- function(data_vector = NULL, spec_row = NULL, fit_curves = NULL,
     if (type[i] == "ADR") {
       if (str_detect(spec_row$Trans_Variable, "tv")) {
         data_vector_transform <- AdResponse(data_vector_transform, fit_curves$tv, c(spec_row$Effective, spec_row$Recency, spec_row$Period, spec_row$Decay))
-      } else if (str_detect(spec_row$Trans_Variable, "display")) {
+      } else if (str_detect(spec_row$Trans_Variable, "digital")) {
         data_vector_transform <- AdResponse(data_vector_transform, fit_curves$displayt1, c(spec_row$Effective, spec_row$Recency, spec_row$Period, spec_row$Decay))
       } else if (str_detect(spec_row$Trans_Variable, "addressable")) {
         data_vector_transform <- AdResponse(data_vector_transform, fit_curves$addressable, c(spec_row$Effective, spec_row$Recency, spec_row$Period, spec_row$Decay))
