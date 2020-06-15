@@ -9,7 +9,7 @@ TransformTempJoin = function(data_input, DFFS, trans_variable){
 
   DF = list()
   for(tmp in names(data_input)){
-    DF[[tmp]] = data_input[[tmp]] %>% bind_cols(DFFS[[tmp]])
+    DF[[tmp]] = data_input[[tmp]] %>% bind_cols(ungroup(DFFS[[tmp]]) %>% select(one_of(trans_variable)))
     cat(str_c("The ", tmp, " level data transformed and augmented \n"))
   }
 
