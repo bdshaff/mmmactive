@@ -3,10 +3,6 @@
 #' @param obj - model object
 #'
 
-
-
-
-
 Decomp <- function(obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
   dpnd_var <- obj$spec %>%
     filter(Variable_Type == "Dependent") %>%
