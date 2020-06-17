@@ -1,4 +1,4 @@
-#' media_mix_op
+#' Media_Mix
 #'
 #' @param mod_obj - model object
 #' @param total_budget - total budget
@@ -6,7 +6,7 @@
 #' @param interactive
 #'
 
-media_mix_opt <- function(mod_obj, total_budget = NULL, incremental = 100000, interactive = FALSE) {
+Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, interactive = FALSE) {
 
   ######### Need to generalize this path #########
   RC <- mod_obj$ABClist

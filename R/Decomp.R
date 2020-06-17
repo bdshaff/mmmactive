@@ -1,9 +1,13 @@
 #' Decomp
 #'
 #' @param obj - model object
+#' @param kpi
+#' @param min_ref
+#' @param max_ref
+#' @param mean_ref
 #'
 
-Decomp <- function(obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
+Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
   dpnd_var <- obj$spec %>%
     filter(Variable_Type == "Dependent") %>%
     pull(Trans_Variable)
@@ -14,7 +18,6 @@ Decomp <- function(obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
 
   cs <- obj$cs
   ts <- obj$Time
-  kpi <- obj$kpi
   mod_data <- obj$data %>% mutate(Intercept = 1)
 
   kpi_data <- obj$data_input$monthly %>%
