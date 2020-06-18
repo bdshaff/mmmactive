@@ -9,8 +9,11 @@ activate_model_spec(mod_obj, input_file_ModelSpec)
 \arguments{
 \item{mod_obj}{- model object}
 
-\item{input_file_ModelSpec}{- file path}
+\item{input_file_ModelSpec}{- file path to ModelSpec.csv}
+}
+\value{
+mod_obj
 }
 \description{
-Activate Model Specification
+This function onloads the model specification file and includes only modeled variables
 }

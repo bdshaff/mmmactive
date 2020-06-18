@@ -1,32 +1,32 @@
 #' Execute Model Fitting
 #'
-#' @param obj
-#' @param Method
+#' Fitting an MMM model on top of a mod_obj
 #'
-#' @return
-#' @export
+#' @param mod_obj - model object
+#' @param Method - Fitting method
 #'
-#' @description
+#' @return mod_obj
 #'
 #' @examples
 #'
-Run_Model_Panel <- function(obj, Method = "Bayes") {
+
+Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
   Method <- "Bayes"
-  big_number <- 100000 # for difuse priors
-  spec <- obj$spec
-  x <- obj$data
+  big_number <- 100000 # for diffuse priors
+  spec <- mod_obj$spec
+  x <- mod_obj$data
 
   DepVar <- spec$Trans_Variable[spec$Variable_Type == "Dependent"]
   IV <- spec$Trans_Variable[spec$Variable_Type != "Dependent"]
   spec <- spec[spec$Variable_Type != "Dependent", ]
   priors <- dplyr::select(spec, Orig_Variable, Trans_Variable, Prior_Mean, Prior_SD)
 
-  if (!is.null(obj$cs)) {
-    cs <- obj$cs
+  if (!is.null(mod_obj$cs)) {
+    cs <- mod_obj$cs
   }
 
-  if (!is.null(obj$Time)) {
-    ts <- obj$Time
+  if (!is.null(mod_obj$Time)) {
+    ts <- mod_obj$Time
   }
 
   # do some checking and make sure the model variables (DepVar and IV) are in data
@@ -65,11 +65,11 @@ Run_Model_Panel <- function(obj, Method = "Bayes") {
 
 
   print("calling my_bayes()...")
-  bayes_obj_inter <- my_bayes(formula = eq, data = x)
+  bayes_mod_obj_inter <- my_bayes(formula = eq, data = x)
   mod_matrix <- model.matrix(eq, x)
 
 
-  b <- bayes_obj_inter$coefficients
+  b <- bayes_mod_obj_inter$coefficients
   b$Variables <- row.names(t(mod_matrix))
   priors <- b
   priors$Prior_Mean <- 0
@@ -131,20 +131,20 @@ Run_Model_Panel <- function(obj, Method = "Bayes") {
   a$Variables <- as.character(a$Variables)
   priors <- a
 
-  bayes_obj <- my_bayes(formula = eq, data = x, priors = priors)
+  bayes_mod_obj <- my_bayes(formula = eq, data = x, priors = priors)
 
-  varyby <- unique(obj$spec$VaryBy)[unique(obj$spec$VaryBy) != "None"]
+  varyby <- unique(mod_obj$spec$VaryBy)[unique(mod_obj$spec$VaryBy) != "None"]
   if (length(varyby) > 0) {
-    b <- bayes_obj$coefficients %>%
+    b <- bayes_mod_obj$coefficients %>%
       separate(Variables, into = c(varyby, "Variables"), sep = "\\.", fill = "left")
     b[[varyby]] <- gsub(varyby, "", b[[varyby]])
 
-    tmp <- data.frame(varyby = unique(obj$data[[varyby]]))
+    tmp <- data.frame(varyby = unique(mod_obj$data[[varyby]]))
     names(tmp) <- varyby
 
     full_b <- expand.grid(
       varyby = tmp[[varyby]],
-      Variables = obj$spec$Trans_Variable[obj$spec$Variable_Type != "Dependent"]
+      Variables = mod_obj$spec$Trans_Variable[mod_obj$spec$Variable_Type != "Dependent"]
     )
     names(full_b)[1] <- varyby
 
@@ -160,63 +160,52 @@ Run_Model_Panel <- function(obj, Method = "Bayes") {
     }
     full_b$Tvalue <- full_b$Estimate / full_b$Error
   } else {
-    varyby <- obj$CS
-    tmp <- data.frame(varyby = unique(obj$data[[varyby]]))
+    varyby <- mod_obj$CS
+    tmp <- data.frame(varyby = unique(mod_obj$data[[varyby]]))
     names(tmp) <- varyby
     full_b <- expand.grid(
       varyby = tmp[[varyby]],
-      Variables = obj$spec$Trans_Variable[toupper(obj$spec$Variable_Type) != "DEPENDENT"]
+      Variables = mod_obj$spec$Trans_Variable[toupper(mod_obj$spec$Variable_Type) != "DEPENDENT"]
     )
     full_b$varyby <- as.character(full_b$varyby)
     full_b$Variables <- as.character(full_b$Variables)
     names(full_b)[1] <- varyby
 
-    full_b <- left_join(full_b, bayes_obj$coefficients)
+    full_b <- left_join(full_b, bayes_mod_obj$coefficients)
   }
-  bayes_obj$coefficients <- full_b
-  obj$Model <- bayes_obj
+  bayes_mod_obj$coefficients <- full_b
+  mod_obj$Model <- bayes_mod_obj
 
   # calculate actual vs predicted
-  obj$Model$act_pred <- act_pred(obj)
+  mod_obj$Model$act_pred <- act_pred(mod_obj)
 
   if (0) {
-    time <- rlang::sym(obj$Time)
+    time <- rlang::sym(mod_obj$Time)
     dv <- rlang::sym(DepVar)
-    cs <- rlang::sym(obj$CS)
+    cs <- rlang::sym(mod_obj$CS)
     cs <- as.formula(cs ~ .)
 
 
-    obj$Model$plt_act_pred <-
-      ggplot(obj$Model$act_pred, aes(x = time)) +
+    mod_obj$Model$plt_act_pred <-
+      ggplot(mod_obj$Model$act_pred, aes(x = time)) +
       geom_point(aes(y = dv, colour = "actual")) +
       geom_line(aes(y = predicted, colour = "predicted")) +
       facet_wrap(cs, scales = "free", ncol = 2)
   }
 
 
-  obj$Model_interLM <- bayes_obj_inter
-  obj$lmModel <- lm(eq_lm, data = x)
+  mod_obj$Model_interLM <- bayes_mod_obj_inter
+  mod_obj$lmModel <- lm(eq_lm, data = x)
 
-  # obj$Model$VIF <- data.frame(vif(obj$lmModel))
-  # obj$Model$VIF <- tibble::rownames_to_column(obj$Model$VIF, var = "Variables")
-  # obj$Model$Priors <- priors
-  # names(obj$Model$VIF) <- c("VIF", "Variables")
-  # obj$Model$VIF <- left_join(obj$Model$coefficients, obj$Model$VIF, by = "Variables")
-  # obj$Model$VIF <- obj$Model$VIF[, c("VIF", "Variables", names(obj$Model$coefficients)[1])]
-  # obj$Model$result_all <- full_join(obj$Model$VIF, obj$Model$coefficients)
-  # obj$Model$result_all <- obj$Model$result_all[, c("Variables", names(obj$Model$coefficients)[1], "VIF", "Estimate", "Error", "Tvalue")]
-  # names(obj$Model$result_all)[names(obj$Model$result_all) == "Variables"] <- "Trans_Variable"
-  # obj$Model$result_all <- full_join(spec, obj$Model$result_all)
+  mod_obj$Model$VIF <- data.frame(vif(mod_obj$lmModel))
+  mod_obj$Model$VIF <- tibble::rownames_to_column(mod_obj$Model$VIF, var = "Variables")
+  mod_obj$Model$result_all <- full_join(mod_obj$Model$VIF, mod_obj$Model$coefficients)
+  mod_obj$Model$result_all <- mod_obj$Model$result_all[, c("Variables", "GVIF", "Estimate", "Error", "Tvalue")]
+  names(mod_obj$Model$result_all)[names(mod_obj$Model$result_all) == "Variables"] <- "Trans_Variable"
+  mod_obj$Model$result_all <- full_join(spec, mod_obj$Model$result_all)
 
-  obj$Model$VIF <- data.frame(vif(obj$lmModel))
-  obj$Model$VIF <- tibble::rownames_to_column(obj$Model$VIF, var = "Variables")
-  obj$Model$result_all <- full_join(obj$Model$VIF, obj$Model$coefficients)
-  obj$Model$result_all <- obj$Model$result_all[, c("Variables", "GVIF", "Estimate", "Error", "Tvalue")]
-  names(obj$Model$result_all)[names(obj$Model$result_all) == "Variables"] <- "Trans_Variable"
-  obj$Model$result_all <- full_join(spec, obj$Model$result_all)
-
-  obj$Model$DW <- durbinWatsonTest(obj$lmModel)
-  obj$Model$result_all$R2 <- rep(obj$Model$R2, nrow(obj$Model$result_all))
-  obj$Model$result_all$DW <- rep(obj$Model$DW$dw, nrow(obj$Model$result_all))
-  return(obj)
+  mod_obj$Model$DW <- durbinWatsonTest(mod_obj$lmModel)
+  mod_obj$Model$result_all$R2 <- rep(mod_obj$Model$R2, nrow(mod_obj$Model$result_all))
+  mod_obj$Model$result_all$DW <- rep(mod_obj$Model$DW$dw, nrow(mod_obj$Model$result_all))
+  return(mod_obj)
 }

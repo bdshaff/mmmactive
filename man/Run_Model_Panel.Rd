@@ -4,16 +4,18 @@
 \alias{Run_Model_Panel}
 \title{Execute Model Fitting}
 \usage{
-Run_Model_Panel(obj, Method = "Bayes")
+Run_Model_Panel(mod_obj, Method = "Bayes")
 }
 \arguments{
-\item{Method}{}
+\item{mod_obj}{- model object}
+
+\item{Method}{- Fitting method}
 }
 \value{
-
+mod_obj
 }
 \description{
-
+Fitting an MMM model on top of a mod_obj
 }
 \examples{
 

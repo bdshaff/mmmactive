@@ -9,6 +9,10 @@ Set_Date_Range(mod_obj, na.rm = TRUE)
 \arguments{
 \item{mod_obj}{- model object}
 }
+\value{
+mod_obj
+}
 \description{
-Set_Date_Range
+Set the data range for the mod_obj before model fitting
+Uses the BeginData and EndDate attributes of the mod_obj to set the range on the transformed data.
 }

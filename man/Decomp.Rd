@@ -2,15 +2,25 @@
 % Please edit documentation in R/Decomp.R
 \name{Decomp}
 \alias{Decomp}
-\title{Decomp}
+\title{Model Decomposition and Contribution Calculations}
 \usage{
-Decomp(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
+Decomp(mod_obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model object}
 
-\item{mean_ref}{}
+\item{kpi}{- kpi variable string}
+
+\item{min_ref}{- vector of variable indexes}
+
+\item{max_ref}{- vector of variable indexes}
+
+\item{mean_ref}{- vector of variable indexes}
+}
+\value{
+mod_obj
 }
 \description{
-Decomp
+This Decomp function is compatible with the Bayesian models fitted with the MSMP framework
+The format of the output is compatible with the legacy reach generation function.
 }

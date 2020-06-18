@@ -1,31 +1,36 @@
-#' Decomp
+#' Model Decomposition and Contribution Calculations
 #'
-#' @param obj - model object
-#' @param kpi
-#' @param min_ref
-#' @param max_ref
-#' @param mean_ref
+#' This Decomp function is compatible with the Bayesian models fitted with the MSMP framework
+#' The format of the output is compatible with the legacy reach generation function.
+#'
+#' @param mod_obj - model object
+#' @param kpi - kpi variable string
+#' @param min_ref - vector of variable indexes
+#' @param max_ref - vector of variable indexes
+#' @param mean_ref - vector of variable indexes
+#'
+#' @return mod_obj
 #'
 
-Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
-  dpnd_var <- obj$spec %>%
+Decomp <- function(mod_obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
+  dpnd_var <- mod_obj$spec %>%
     filter(Variable_Type == "Dependent") %>%
     pull(Trans_Variable)
 
-  indp_var <- obj$spec %>%
+  indp_var <- mod_obj$spec %>%
     filter(Variable_Type != "Dependent") %>%
     pull(Trans_Variable)
 
-  cs <- obj$cs
-  ts <- obj$Time
-  mod_data <- obj$data %>% mutate(Intercept = 1)
+  cs <- mod_obj$cs
+  ts <- mod_obj$Time
+  mod_data <- mod_obj$data %>% mutate(Intercept = 1)
 
-  kpi_data <- obj$data_input$monthly %>%
+  kpi_data <- mod_obj$data_input$monthly %>%
     ungroup() %>%
     select(!!sym(cs), !!sym(ts), !!sym(kpi))
 
-  mod_form <- toupper(obj$ModelForm)
-  mod_coef <- obj$Model$coefficients
+  mod_form <- toupper(mod_obj$ModelForm)
+  mod_coef <- mod_obj$Model$coefficients
 
   if (!str_detect(dpnd_var, "sales")) {
     stop("Please include regular sales data(not meansby) in model data. ")
@@ -148,7 +153,7 @@ Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = N
 
 
   #  decomp_prep[, toupper(dpnd_var)] <- pull(decomp, dpnd_var)
-  categorization <- obj$spec %>% select(Trans_Variable, AggregateVariable)
+  categorization <- mod_obj$spec %>% select(Trans_Variable, AggregateVariable)
   categorization <- categorization %>%
     arrange(Trans_Variable) %>%
     mutate(Trans_Variable = str_trim(stringi::stri_trans_toupper(Trans_Variable,
@@ -192,7 +197,7 @@ Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = N
   })
   var_cat_tbl <- data.frame(
     variable = names(decomp_prep),
-    modelType = obj$ModelForm, Categories = c(var_cat), stringsAsFactors = FALSE
+    modelType = mod_obj$ModelForm, Categories = c(var_cat), stringsAsFactors = FALSE
   )
   var_cat_tbl$ReferencePoints <- ""
   var_cat_tbl$ReferencePoints[min_ref] <- "Min"
@@ -306,8 +311,8 @@ Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = N
     ,
     -(1:3)
     ] / rowSums(summary_pct_regional[, -(1:3)])
-  base::message("\nDecomp start period:  ", obj$BeginDate)
-  base::message("Decomp end period:    ", obj$EndDate)
+  base::message("\nDecomp start period:  ", mod_obj$BeginDate)
+  base::message("Decomp end period:    ", mod_obj$EndDate)
   varCont <- decomp_prep %>%
     gather(
       "variable", "value",
@@ -362,7 +367,7 @@ Decomp <- function(obj, kpi = NULL, min_ref = NULL, max_ref = NULL, mean_ref = N
     summaryPerc = summaryPerc, variableTbl = var_cat_tbl,
     varCont = varCont
   )
-  obj$decomp_list <- decomp_list
-  return(obj)
+  mod_obj$decomp_list <- decomp_list
+  return(mod_obj)
 }
 

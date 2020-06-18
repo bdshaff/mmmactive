@@ -1,50 +1,51 @@
-#' #' Load_Data
-#' #'
-#' #' @param obj - model object
-#' #' @param input_file_ModelData - file parth
-#' #'
+#' Load_Data
 #'
-#' Load_Data = function(obj, input_file_ModelData){
-#'   datasheets = excel_sheets(input_file_ModelData)
+#' This function loads data onto a mod_obj for the paths supplied with the `input_files` vector of paths.
+#' Internally the Load_ModelData(), Load_FMIData(), Load_MSRPData(), and Load_SpendData() functions are called.
 #'
-#'   obj$data_input =
-#'     map(datasheets, ~ read_xlsx(input_file_ModelData, sheet = .x)) %>%
-#'     set_names(str_extract(datasheets, "weekly|monthly"))
+#' @param mod_obj - model mod_object
+#' @param input_files - paths to input files
+#' @param NAMEPLATE - Nameplate (ex. Titan)
+#' @param nmp - Nameplate (ex. ttn)
 #'
-#'   groups = names(obj$data_group_selector)
-#'
-#'   if("weekly" %in% str_extract(datasheets, "weekly|monthly")){
-#'
-#'     obj$data_input$weekly =
-#'       obj$data_input$weekly %>%
-#'       mutate(week = ymd(week)) %>%
-#'       group_by_at(vars(groups))
-#'
-#'     for(g in groups){
-#'
-#'       keep_vec = unlist(obj$data_input$weekly[,g]) %in% obj$data_group_selector[[g]]
-#'       obj$data_input$weekly = obj$data_input$weekly[keep_vec,]
-#'
-#'     }
-#'
-#'   }
-#'
-#'   if("monthly" %in% str_extract(datasheets, "weekly|monthly")){
-#'
-#'     obj$data_input$monthly =
-#'       obj$data_input$monthly %>%
-#'       mutate(month = ymd(month)) %>%
-#'       group_by_at(vars(groups))
-#'
-#'     for(g in groups){
-#'
-#'       keep_vec = unlist(obj$data_input$monthly[,g]) %in% obj$data_group_selector[[g]]
-#'       obj$data_input$monthly = obj$data_input$monthly[keep_vec,]
-#'
-#'     }
-#'
-#'   }
-#'
-#'   return(obj)
-#'
-#' }
+#' @return mod_obj
+
+
+Load_Data <- function(mod_obj, input_files = list(
+                        input_file_ModelData = NULL,
+                        input_file_FMIData = NULL,
+                        input_file_SpendData = NULL,
+                        input_file_MSRPData = NULL
+                      ),
+                      NAMEPLATE = NULL,
+                      nmp = NULL) {
+  if (!is.null(input_files$input_file_ModelData)) {
+    message("Loading ModelData")
+    mod_obj <- Load_ModelData(mod_obj, input_files$input_file_ModelData)
+  } else {
+    warning("No ModelData file path. Data not loaded")
+  }
+
+  if (!is.null(input_files$input_file_FMIData)) {
+    message("Loading FMIData")
+    mod_obj <- Load_FMIData(mod_obj, input_files$input_file_FMIData)
+  } else {
+    warning("No FMIData file path. Data not loaded")
+  }
+
+  if (!is.null(input_files$input_file_SpendData)) {
+    message("Loading SpendData")
+    mod_obj <- Load_SpendData(mod_obj, input_files$input_file_SpendData, NAMEPLATE, nmp)
+  } else {
+    warning("No SpendData file path. Data not loaded")
+  }
+
+  if (!is.null(input_files$input_file_MSRPData)) {
+    message("Loading MSRPData")
+    mod_obj <- Load_MSRPData(mod_obj, input_files$input_file_MSRPData, NAMEPLATE)
+  } else {
+    warning("No MSRPData file path. Data not loaded")
+  }
+
+  return(mod_obj)
+}

@@ -4,13 +4,16 @@
 \alias{Load_FitCurves}
 \title{Load_FitCurves}
 \usage{
-Load_FitCurves(obj, input_file_ModelFitCurves)
+Load_FitCurves(mod_obj, input_file_ModelFitCurves)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model mod_object}
 
 \item{input_file_ModelFitCurves}{- file path}
 }
+\value{
+mod_obj
+}
 \description{
-Load_FitCurves
+Loads a list of fitcurves onto the mod_obj
 }

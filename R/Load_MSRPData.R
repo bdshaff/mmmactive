@@ -1,14 +1,18 @@
-#' Load_FMIData
+#' Load_MSRPData
 #'
-#' @param obj - model object
-#' @param input_file_MSRPData
-#' @param NAMEPLATE
+#' This function loads the MSRP data onto the mod_obj
+#'
+#' @param mod_obj - model mod_object
+#' @param input_file_MSRPData - path to MSRP data file.
+#' @param NAMEPLATE - Nameplate (ex. Titan)
+#'
+#' @return mod_obj
 #'
 
-Load_MSRPData <- function(obj, input_file_MSRPData, NAMEPLATE = NULL){
-  Mtable = read_csv(input_file_MSRPData) %>%
+Load_MSRPData <- function(mod_obj, input_file_MSRPData, NAMEPLATE = NULL) {
+  Mtable <- read_csv(input_file_MSRPData) %>%
     filter(Model == NAMEPLATE)
 
-  obj$Mtable = Mtable
-  return(obj)
+  mod_obj$Mtable <- Mtable
+  return(mod_obj)
 }

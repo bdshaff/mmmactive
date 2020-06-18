@@ -14,6 +14,9 @@ TransformSplit(
 \arguments{
 \item{print}{}
 }
+\value{
+data.frame
+}
 \description{
 TransformSplit
 }

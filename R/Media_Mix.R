@@ -1,18 +1,22 @@
-#' Media_Mix
+#' Media Mix Optimization
+#'
+#' This function implements media mix optimization.
 #'
 #' @param mod_obj - model object
 #' @param total_budget - total budget
-#' @param incremental
-#' @param interactive
+#' @param incremental - incremental step size
+#' @param interactive - should the user be asked for Min and Max budget input. (only set TRUE when in an interactive session)
+#'
+#' @return mod_obj
 #'
 
 Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, interactive = FALSE) {
 
   ######### Need to generalize this path #########
   RC <- mod_obj$ABClist
-  ABCs <- RC$ABCs[,-which(RC$ABCs[1,] < 1)]
+  ABCs <- RC$ABCs[, -which(RC$ABCs[1, ] < 1)]
   multiplier <- pull(filter(mod_obj$Mtable, FiscalPeriod == "FY18"), MSRP)
-  #multiplier <- pull(filter(mod_obj$Mtable, FiscalPeriod == FiscalPeriod), MSRP)
+  # multiplier <- pull(filter(mod_obj$Mtable, FiscalPeriod == FiscalPeriod), MSRP)
 
   # To avoid scientific notation
   options("scipen" = 100, "digits" = 4)
@@ -33,7 +37,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
       Max = 900000000
     )
 
-  if(interactive == TRUE){
+  if (interactive == TRUE) {
     message("Enter Min-Max Constraints in $MMs for each channel as: Min Spend,Max Spend; Ex: 1,900")
     for (i in seq(nrow(df_opt))) {
       min_max <- readline(paste0(df_opt$Channel[i], ": \t"))
@@ -45,7 +49,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   df_opt <- df_opt %>%
     mutate(
       Spend = Min,
-      mROI = (mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000
+      mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000
     )
 
   ######### Use DT to set these up! #########
@@ -65,7 +69,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
     }
 
     df_opt <- df_opt %>%
-      mutate(mROI = (mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
+      mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
 
     rem_budget <- total_budget - sum(df_opt$Spend)
   }
@@ -77,14 +81,14 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   # print(rem_budget)
 
   df_opt <- df_opt %>%
-    mutate(mROI = (mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(mmmlegacy::Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
+    mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
 
   print("Done")
 
-  mod_obj$mmo = list(df_orig = df_orig,
-                     df_opt = df_opt[order(df_opt$Channel), ])
+  mod_obj$mmo <- list(
+    df_orig = df_orig,
+    df_opt = df_opt[order(df_opt$Channel), ]
+  )
 
   return(mod_obj)
-
 }
-

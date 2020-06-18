@@ -9,10 +9,14 @@ add_group_selector(mod_obj, vehicles, regions)
 \arguments{
 \item{mod_obj}{- model object}
 
-\item{vehicles}{- cahacter vector}
+\item{vehicles}{- character vector}
 
 \item{regions}{- character vectors}
 }
+\value{
+mod_obj
+}
 \description{
-Add Group Selector
+This function vehicle and region values to be included.
+The inclusion in necessary for data loading and transformation.
 }

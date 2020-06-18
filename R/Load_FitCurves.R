@@ -1,18 +1,19 @@
 #' Load_FitCurves
 #'
-#' @param obj - model object
+#' Loads a list of fitcurves onto the mod_obj
+#'
+#' @param mod_obj - model mod_object
 #' @param input_file_ModelFitCurves - file path
 #'
+#' @return mod_obj
+#'
 
+Load_FitCurves <- function(mod_obj, input_file_ModelFitCurves) {
+  datasheets <- excel_sheets(input_file_ModelFitCurves)
 
-Load_FitCurves = function(obj, input_file_ModelFitCurves){
-
-  datasheets = excel_sheets(input_file_ModelFitCurves)
-
-  obj$fit_curves =
+  mod_obj$fit_curves <-
     map(datasheets, ~ clean_names(read_xlsx(input_file_ModelFitCurves, sheet = .x))) %>%
     set_names(str_replace(str_extract(datasheets, "_[a-zA-Z0-9.-]*$"), "_", ""))
 
-  return(obj)
-
+  return(mod_obj)
 }

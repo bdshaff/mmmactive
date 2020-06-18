@@ -5,6 +5,8 @@
 #' @param fit_curves
 #' @param print
 #'
+#' @return vector - transformed data_vector
+#'
 
 TransformVar <- function(data_vector = NULL, spec_row = NULL, fit_curves = NULL, print = TRUE) {
   require(tidyverse)

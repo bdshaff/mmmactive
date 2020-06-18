@@ -4,13 +4,16 @@
 \alias{Load_FMIData}
 \title{Load_FMIData}
 \usage{
-Load_FMIData(obj, input_file_FMIData)
+Load_FMIData(mod_obj, input_file_FMIData)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model mod_object}
 
-\item{input_file_FMIData}{}
+\item{input_file_FMIData}{- path to FMI data file}
+}
+\value{
+mod_obj
 }
 \description{
-Load_FMIData
+This function loads FMI data onto a mod_obj.
 }

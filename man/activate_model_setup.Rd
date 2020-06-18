@@ -9,8 +9,11 @@ activate_model_setup(mod_obj, input_file_ModelSetup)
 \arguments{
 \item{mod_obj}{- model object}
 
-\item{input_file_ModelSetup}{- file path}
+\item{input_file_ModelSetup}{- file path to ModelSetup.csv}
+}
+\value{
+mod_obj
 }
 \description{
-Activate Model Setup
+This function dispatches a number of model metadata onto the mod_obj.
 }

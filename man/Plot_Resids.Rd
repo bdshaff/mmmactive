@@ -2,15 +2,18 @@
 % Please edit documentation in R/Plot_Resids.R
 \name{Plot_Resids}
 \alias{Plot_Resids}
-\title{Plot_Resids}
+\title{Fitted vs Actual and Residual Plot}
 \usage{
-Plot_Resids(obj, panel_name)
+Plot_Resids(mod_obj, panel_name)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model mod_object}
 
 \item{panel_name}{- panel name}
 }
+\value{
+mod_obj
+}
 \description{
-Plot_Resids
+A Plot of fitted vs observed for a mod_obj
 }

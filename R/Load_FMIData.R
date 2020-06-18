@@ -1,25 +1,32 @@
 #' Load_FMIData
 #'
-#' @param obj - model object
-#' @param input_file_FMIData
+#' This function loads FMI data onto a mod_obj.
+#'
+#' @param mod_obj - model mod_object
+#' @param input_file_FMIData - path to FMI data file
+#'
+#' @return mod_obj
 #'
 
-Load_FMIData = function(obj, input_file_FMIData){
-  FMI =
+Load_FMIData <- function(mod_obj, input_file_FMIData) {
+  FMI <-
     read.csv(input_file_FMIData, stringsAsFactors = FALSE) %>%
     collect(n = Inf) %>%
     filter(region == "100") %>%
-    filter(vehicle %in% c("alt", "arm", "fro", "lef", "max", "mur",
-                          "nv", "pth", "rge", "sen", "ttn", "ver")) %>%
+    filter(vehicle %in% c(
+      "alt", "arm", "fro", "lef", "max", "mur",
+      "nv", "pth", "rge", "sen", "ttn", "ver"
+    )) %>%
     mutate(week = ymd(week))
 
-  Ftable =
+  Ftable <-
     data.table::dcast(FMI, vehicle + week ~ var + type + tier,
-                      value.var = "value",
-                      fun.aggregate = sum) %>% as.data.frame(.)
+      value.var = "value",
+      fun.aggregate = sum
+    ) %>% as.data.frame(.)
 
-  Ftable[is.na(Ftable)]  = 0
+  Ftable[is.na(Ftable)] <- 0
 
-  obj$Ftable = Ftable
-  return(obj)
+  mod_obj$Ftable <- Ftable
+  return(mod_obj)
 }

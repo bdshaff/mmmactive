@@ -14,6 +14,9 @@ TransformVar(
 \arguments{
 \item{print}{}
 }
+\value{
+vector - transformed data_vector
+}
 \description{
 TransformVar
 }

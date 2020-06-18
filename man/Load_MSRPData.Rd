@@ -2,15 +2,20 @@
 % Please edit documentation in R/Load_MSRPData.R
 \name{Load_MSRPData}
 \alias{Load_MSRPData}
-\title{Load_FMIData}
+\title{Load_MSRPData}
 \usage{
-Load_MSRPData(obj, input_file_MSRPData, NAMEPLATE = NULL)
+Load_MSRPData(mod_obj, input_file_MSRPData, NAMEPLATE = NULL)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model mod_object}
 
-\item{NAMEPLATE}{}
+\item{input_file_MSRPData}{- path to MSRP data file.}
+
+\item{NAMEPLATE}{- Nameplate (ex. Titan)}
+}
+\value{
+mod_obj
 }
 \description{
-Load_FMIData
+This function loads the MSRP data onto the mod_obj
 }

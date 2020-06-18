@@ -16,6 +16,9 @@ TransformTemp(
 \arguments{
 \item{print}{}
 }
+\value{
+data.frame
+}
 \description{
 TransformTemp
 }

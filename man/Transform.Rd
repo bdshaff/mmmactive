@@ -4,13 +4,16 @@
 \alias{Transform}
 \title{Transform}
 \usage{
-Transform(obj = NULL, print = TRUE)
+Transform(mod_obj = NULL, print = TRUE)
 }
 \arguments{
-\item{obj}{- model object}
+\item{mod_obj}{- model mod_object}
 
 \item{print}{- TRUE or FALSE}
 }
+\value{
+mod_obj
+}
 \description{
-Transform
+Run data transformation and combine weekly and monthly level data accosting to the model specification.
 }
