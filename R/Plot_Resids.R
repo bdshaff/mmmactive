@@ -14,8 +14,8 @@ Plot_Resids <- function(mod_obj, panel_name) {
   # if not alert that a model needs to be fit first
 
   x <- mod_obj$data
-  cs <- mod_mod_obj$cs
-  ts <- mod_mod_obj$Time
+  cs <- mod_obj$cs
+  ts <- mod_obj$Time
 
   # Dependent Variable
   depvar <- mod_obj$spec$Trans_Variable[mod_obj$spec$Variable_Type == "Dependent"]
