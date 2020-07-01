@@ -19,6 +19,8 @@ Transform <- function(mod_obj = NULL, print = TRUE) {
   spec_trans <- spec %>% filter(Transform == "Y")
   cross_section <- mod_obj$cs
   trans_variable <- mod_obj$spec$Trans_Variable
+  kpi <- mod_obj$kpi
+  DepVar <- spec$Trans_Variable[spec$Variable_Type == "Dependent"]
 
 
   if (is.null(cross_section)) {
@@ -57,11 +59,8 @@ Transform <- function(mod_obj = NULL, print = TRUE) {
 
       mod_obj$data_transformed <- DFFS
       mod_obj$data <- data_input %>% bind_cols(DFFS)
-
       return(mod_obj)
-
     } else if (class(data_input) == "list") {
-
       DFFS <- map(names(data_input), ~ TransformTemp(
         data_tmp = data_input,
         spec_tmp = spec_trans,
@@ -72,8 +71,14 @@ Transform <- function(mod_obj = NULL, print = TRUE) {
       )) %>% set_names(names(data_input))
 
       mod_obj$data_transformed <- DFFS
-
       mod_obj$data <- TransformTempJoin(data_input, DFFS, trans_variable)
+
+      if(kpi == "sales"){
+        mod_obj$data =
+          mod_obj$data %>%
+          group_by(!!sym(cross_section)) %>%
+          mutate(!!DepVar := !!sym(DepVar)/mean(!!sym(DepVar), na.rm = TRUE))
+      }
 
       return(mod_obj)
     }

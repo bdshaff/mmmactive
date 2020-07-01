@@ -19,5 +19,6 @@ activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
   mod_obj$SimEnd <- mdy(Model_setup$Value[Model_setup$Parameter == "SimEnd"])
   mod_obj$mroi_step <- as.numeric(Model_setup$Value[Model_setup$Parameter == "Mroi"])
   mod_obj$cs <- Model_setup$Value[Model_setup$Parameter == "Crossection"]
+  mod_obj$kpi <- Model_setup$Value[Model_setup$Parameter == "kpi"]
   return(mod_obj)
 }
