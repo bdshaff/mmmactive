@@ -81,6 +81,11 @@ Transform <- function(mod_obj, print = TRUE) {
           mod_obj$data %>%
           group_by(!!sym(cross_section)) %>%
           mutate(!!DepVar := !!sym(DepVar)/mean(!!sym(DepVar), na.rm = TRUE))
+
+        mod_obj$data_transformed$monthly =
+          mod_obj$data_transformed$monthly %>%
+          group_by(!!sym(cross_section)) %>%
+          mutate(!!DepVar := !!sym(DepVar)/mean(!!sym(DepVar), na.rm = TRUE))
       }
 
       return(mod_obj)
