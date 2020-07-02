@@ -9,6 +9,10 @@
 #'
 
 Load_FitCurves <- function(mod_obj, input_file_ModelFitCurves) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   datasheets <- excel_sheets(input_file_ModelFitCurves)
 
   mod_obj$fit_curves <-

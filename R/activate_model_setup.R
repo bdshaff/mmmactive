@@ -9,6 +9,10 @@
 #'
 
 activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   Model_setup <- read_csv(input_file_ModelSetup, col_types = cols())
   mod_obj$ModelForm <- Model_setup$Value[Model_setup$Parameter == "ModelForm"]
   mod_obj$Panel <- Model_setup$Value[Model_setup$Parameter == "Panel"]

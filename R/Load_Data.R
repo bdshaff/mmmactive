@@ -19,6 +19,10 @@ Load_Data <- function(mod_obj, input_files = list(
                       ),
                       NAMEPLATE = NULL,
                       nmp = NULL) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   if (!is.null(input_files$input_file_ModelData)) {
     message("Loading ModelData")
     mod_obj <- Load_ModelData(mod_obj, input_files$input_file_ModelData)

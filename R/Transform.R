@@ -8,9 +8,12 @@
 #' @return mod_obj
 #'
 
-Transform <- function(mod_obj = NULL, print = TRUE) {
-  if (is.null(mod_obj)) {
-    warning("Please supply model mod_object")
+Transform <- function(mod_obj, print = TRUE) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+  if (!is.activated(mod_obj)) {
+    stop("mod_obj must be activated.")
   }
 
   data_input <- mod_obj$data_input

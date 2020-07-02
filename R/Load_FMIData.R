@@ -9,6 +9,10 @@
 #'
 
 Load_FMIData <- function(mod_obj, input_file_FMIData) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   FMI <-
     read.csv(input_file_FMIData, stringsAsFactors = FALSE) %>%
     collect(n = Inf) %>%

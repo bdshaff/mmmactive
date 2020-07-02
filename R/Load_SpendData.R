@@ -11,6 +11,10 @@
 #'
 
 Load_SpendData <- function(mod_obj, input_file_SpendData, NAMEPLATE = NULL, nmp = NULL) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   Stable <-
     read_csv(input_file_SpendData) %>%
     mutate(Date = mdy(Date)) %>%

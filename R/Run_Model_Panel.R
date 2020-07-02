@@ -11,6 +11,10 @@
 #'
 
 Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
+  if (!is.activated(mod_obj)) {
+    stop("mod_obj must be activated.")
+  }
+
   Method <- "Bayes"
   big_number <- 100000 # for diffuse priors
   spec <- mod_obj$spec

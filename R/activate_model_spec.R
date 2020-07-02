@@ -9,6 +9,10 @@
 #'
 
 activate_model_spec <- function(mod_obj, input_file_ModelSpec) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   mod_obj$spec <- read_csv(input_file_ModelSpec, col_types = cols()) %>% filter(Include == 1)
   return(mod_obj)
 }

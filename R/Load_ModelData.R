@@ -10,6 +10,10 @@
 #'
 
 Load_ModelData <- function(mod_obj, input_file_ModelData) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+
   datasheets <- excel_sheets(input_file_ModelData)
 
   mod_obj$data_input <-

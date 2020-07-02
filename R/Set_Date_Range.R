@@ -9,6 +9,13 @@
 #'
 
 Set_Date_Range <- function(mod_obj, na.rm = TRUE) {
+  if (!is.mod_obj(mod_obj)) {
+    stop("Input must be of class mod_obj.")
+  }
+  if (!is.activated(mod_obj)) {
+    stop("mod_obj must be activated.")
+  }
+
   mod_obj$data <-
     mod_obj$data %>%
     filter(
