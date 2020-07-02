@@ -13,7 +13,7 @@
 #'
 
 
-Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
+Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
   kpi <- mod_obj$kpi
   cs <- mod_obj$cs
   ts <- mod_obj$Time
@@ -35,10 +35,11 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     ungroup() %>%
     select(!!sym(cs), !!sym(ts), !!sym(kpi))
 
-  conversion <- mod_obj$data_input$monthly %>%
+  conversion <- bind_cols(mod_obj$data_input$monthly %>%
+    select(!!sym(ts), !!sym(cs), !!sym(kpi)), mod_obj$data_transformed$monthly %>% ungroup() %>% select(sales_div_tiv_trans)) %>%
     ungroup() %>%
-    select(!!sym(ts), !!sym(cs), !!sym(kpi), !!sym(dpnd_var_raw)) %>%
-    mutate(conv = !!sym(kpi) / !!sym(dpnd_var_raw))
+    select(!!sym(ts), !!sym(cs), !!sym(kpi), !!sym(dpnd_var)) %>%
+    mutate(conv = !!sym(kpi) / !!sym(dpnd_var))
 
   if (!str_detect(dpnd_var, "sales")) {
     stop("Please include regular sales data(not meansby) in model data. ")
@@ -67,8 +68,25 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     indp_var_list <- indp_var_decomp %>%
       select(-!!sym(ts)) %>%
       as.list()
-    ind_decomp <- bind_cols(imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, mod_coef$Variables)]) %>% as_tibble(), indp_var_decomp %>%
-      select(!!sym(ts)))
+
+    var_name_list <- mod_coef %>%
+      select(!!sym(cs), Variables) %>%
+      unite("Variables", !!sym(cs), Variables, sep = "_") %>%
+      pull(Variables)
+
+    ind_decomp <- bind_cols(
+      imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, var_name_list)]) %>%
+        as_tibble(),
+      indp_var_decomp %>% select(!!sym(ts))
+    )
+
+
+    # ind_decomp <- bind_cols(
+    #   imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, mod_coef$Variables)]) %>%
+    #     as_tibble(),
+    #   indp_var_decomp %>% select(!!sym(ts))
+    # )
+
 
     decomp <- bind_rows(dpnd_var_decomp %>% pivot_longer(-!!sym(ts), names_to = "var", values_to = "value"), ind_decomp %>%
       pivot_longer(-!!sym(ts), names_to = "var", values_to = "value")) %>%
@@ -85,6 +103,7 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
 
   constraint <- function(df, values, f) {
     if (is.null(values)) {
+      df$C <- 0
       return(df)
     }
     function_values <- apply(
@@ -198,7 +217,7 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     reshape2::dcast(paste(toupper(cs), " + ", toupper(ts), " + ", "FY ~ Categories"), fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "value") %>%
     left_join(kpi_data %>% rename_all(toupper)) %>%
     select(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), !!sym(toupper(kpi)), everything()) %>%
-    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)))
+    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!sym(toupper(NMP)) := toupper(kpi))
 
   # Contributions pct table - by region & month
   contribution2_return <- decomp_conv %>%
@@ -210,7 +229,7 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     reshape2::dcast(paste(toupper(cs), " + ", toupper(ts), " + ", "FY ~ Categories"), fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "pct") %>%
     left_join(kpi_data %>% rename_all(toupper)) %>%
     select(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), !!sym(toupper(kpi)), everything()) %>%
-    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)))
+    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!sym(toupper(NMP)) := toupper(kpi))
 
   # Regular summary table
   summary_return <- contribution_return %>%
@@ -218,23 +237,24 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     group_by(Group, FiscalYear, variable) %>%
     summarise(value = sum(value)) %>%
     reshape2::dcast(Group + FiscalYear ~ variable, fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "value") %>%
-    select(Group, FiscalYear, SALES, BASE, everything())
+    select(Group, FiscalYear, !!sym(NMP), BASE, everything())
 
   # PCT summary table
   summary2_return <- summary_return
   summary2_return[, -(1:3)] <- summary2_return[, -(1:3)] / rowSums(summary2_return[, -(1:3)])
 
   # decomp_national
-  decomp_national <- decomp_prep %>%
-    mutate(FY = if_else(month(!!sym(toupper(ts))) > 3, year(!!sym(toupper(ts))), year(!!sym(toupper(ts))) - 1)) %>%
-    left_join(kpi_data %>% rename_all(toupper)) %>%
-    select(!!sym(toupper(ts)), !!sym(toupper(cs)), FY, everything()) %>%
-    gather("variable", "value", 4:ncol(.)) %>%
-    left_join(var_cat_tbl %>% select(variable, Categories)) %>%
-    mutate(Categories = if_else(variable == toupper(kpi), "KPI", Categories)) %>%
-    group_by(FY, Categories) %>%
-    summarise(value = sum(value, na.rm = TRUE)) %>%
-    reshape2::dcast(Categories ~ FY, fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "value")
+  decomp_national <- contribution_return %>%
+    gather("var", "value", 4:ncol(.)) %>%
+    group_by(FiscalYear, var) %>%
+    summarise(value = sum(value)) %>%
+    dcast(var ~ FiscalYear, fun.aggregate = function(x) {
+      sum(x, na.rm = TRUE)
+    }, value.var = "value") %>%
+    rename(Categories = var)
+
+
+  decomp_national <- rbind(decomp_national[decomp_national$Categories == NMP, ], decomp_national[decomp_national$Categories != NMP, ])
 
   # Variable Categorization Table
   variableTbl <- var_cat_tbl
@@ -248,7 +268,7 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     left_join(var_cat_tbl %>% select(variable, Categories)) %>%
     group_by(!!sym(toupper(cs)), !!sym(toupper(ts)), variable, Categories) %>%
     summarise(value = sum(value, na.rm = TRUE)) %>%
-    mutate(Categories = if_else(variable == toupper(kpi), "KPI", Categories)) %>%
+    mutate(Categories = if_else(variable == toupper(kpi), NMP, Categories)) %>%
     reshape2::dcast(paste("variable + Categories + ", toupper(cs), " ~ ", toupper(ts)), fun.aggregate = function(x) {
       sum(x,
         na.rm = TRUE

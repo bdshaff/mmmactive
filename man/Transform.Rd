@@ -4,7 +4,7 @@
 \alias{Transform}
 \title{Transform}
 \usage{
-Transform(mod_obj = NULL, print = TRUE)
+Transform(mod_obj, print = TRUE)
 }
 \arguments{
 \item{mod_obj}{- model mod_object}
