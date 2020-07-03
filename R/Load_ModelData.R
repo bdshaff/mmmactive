@@ -13,6 +13,9 @@ Load_ModelData <- function(mod_obj, input_file_ModelData) {
   if (!is.mod_obj(mod_obj)) {
     stop("Input must be of class mod_obj.")
   }
+  if (!is.load_data_ready(mod_obj)) {
+    stop("mod_obj missing group selector needed to load data.")
+  }
 
   datasheets <- excel_sheets(input_file_ModelData)
 

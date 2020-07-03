@@ -8,7 +8,7 @@ is.activated <- function(x) {
   nms <- c("ModelForm", "Panel", "Time", "BeginDate", "EndDate", "SimStart", "SimEnd", "mroi_step", "cs", "kpi", "spec")
   test <- sum(nms %in% attributes(mod_obj)$names) == 11
   if(!test){
-    warning(paste(nms[!(nms %in% attributes(mod_obj)$names)],": missing element to activate mod_obj\n"))
+    warning(paste(nms[!(nms %in% attributes(mod_obj)$names)],": missing element to activate mod_obj\n"), immediate. = TRUE)
   }
   return(test)
 }

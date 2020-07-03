@@ -15,6 +15,9 @@ Set_Date_Range <- function(mod_obj, na.rm = TRUE) {
   if (!is.activated(mod_obj)) {
     stop("mod_obj must be activated.")
   }
+  if (!is.data_transformed(mod_obj)) {
+    stop("mod_obj must have transformed data to set date range.")
+  }
 
   mod_obj$data <-
     mod_obj$data %>%

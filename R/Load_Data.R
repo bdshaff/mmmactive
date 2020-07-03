@@ -22,6 +22,9 @@ Load_Data <- function(mod_obj, input_files = list(
   if (!is.mod_obj(mod_obj)) {
     stop("Input must be of class mod_obj.")
   }
+  if (!is.load_data_ready(mod_obj)) {
+    stop("mod_obj missing group selector needed to load data.")
+  }
 
   if (!is.null(input_files$input_file_ModelData)) {
     message("Loading ModelData")

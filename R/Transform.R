@@ -15,6 +15,9 @@ Transform <- function(mod_obj, print = TRUE) {
   if (!is.activated(mod_obj)) {
     stop("mod_obj must be activated.")
   }
+  if (!is.transform_ready(mod_obj)) {
+    stop("mod_obj is not transform ready.")
+  }
 
   data_input <- mod_obj$data_input
   spec <- mod_obj$spec
