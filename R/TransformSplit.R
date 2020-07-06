@@ -22,7 +22,7 @@ TransformSplit <- function(data_split = NULL, spec_split = NULL, fit_curves = NU
   }
 
   if (print) {
-    cat(str_c("Crossection Level: ", unique(data_split$vehicle), "\n"))
+    cat(str_c("Crossection Level: ", unique(data_split$region), "\n")) ## This needs to depend on the mod_obj$cs
   }
 
   data_split_transform <-

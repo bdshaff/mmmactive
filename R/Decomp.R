@@ -18,6 +18,7 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
     stop("mod_obj must have a fitted model to run model decomposition.")
   }
 
+  NMP <- mod_obj$NMP
   kpi <- mod_obj$kpi
   cs <- mod_obj$cs
   ts <- mod_obj$Time

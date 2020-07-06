@@ -5,8 +5,6 @@
 #'
 #' @param mod_obj - model mod_object
 #' @param input_files - paths to input files
-#' @param NAMEPLATE - Nameplate (ex. Titan)
-#' @param nmp - Nameplate (ex. ttn)
 #'
 #' @return mod_obj
 
@@ -16,9 +14,7 @@ Load_Data <- function(mod_obj, input_files = list(
                         input_file_FMIData = NULL,
                         input_file_SpendData = NULL,
                         input_file_MSRPData = NULL
-                      ),
-                      NAMEPLATE = NULL,
-                      nmp = NULL) {
+                      )) {
   if (!is.mod_obj(mod_obj)) {
     stop("Input must be of class mod_obj.")
   }
@@ -42,14 +38,14 @@ Load_Data <- function(mod_obj, input_files = list(
 
   if (!is.null(input_files$input_file_SpendData)) {
     message("Loading SpendData")
-    mod_obj <- Load_SpendData(mod_obj, input_files$input_file_SpendData, NAMEPLATE, nmp)
+    mod_obj <- Load_SpendData(mod_obj, input_files$input_file_SpendData)
   } else {
     warning("No SpendData file path. Data not loaded")
   }
 
   if (!is.null(input_files$input_file_MSRPData)) {
     message("Loading MSRPData")
-    mod_obj <- Load_MSRPData(mod_obj, input_files$input_file_MSRPData, NAMEPLATE)
+    mod_obj <- Load_MSRPData(mod_obj, input_files$input_file_MSRPData)
   } else {
     warning("No MSRPData file path. Data not loaded")
   }

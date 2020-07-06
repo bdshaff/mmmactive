@@ -10,13 +10,16 @@
 #' @return mod_obj
 #'
 
-Load_SpendData <- function(mod_obj, input_file_SpendData, NAMEPLATE = NULL, nmp = NULL) {
+Load_SpendData <- function(mod_obj, input_file_SpendData) {
   if (!is.mod_obj(mod_obj)) {
     stop("Input must be of class mod_obj.")
   }
   if (!is.load_data_ready(mod_obj)) {
     stop("mod_obj missing group selector needed to load data.")
   }
+
+  NAMEPLATE <- mod_obj$NAMEPLATE
+  nmp <- mod_obj$nmp
 
   Stable <-
     read_csv(input_file_SpendData) %>%
