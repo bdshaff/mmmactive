@@ -4,16 +4,16 @@
 \alias{Load_SpendData}
 \title{Load_SpendData}
 \usage{
-Load_SpendData(mod_obj, input_file_SpendData, NAMEPLATE = NULL, nmp = NULL)
+Load_SpendData(mod_obj, input_file_SpendData)
 }
 \arguments{
 \item{input_file_SpendData}{- path to the spend data file}
 
+\item{mod_mod_obj}{- model mod_object}
+
 \item{NAMEPLATE}{- Nameplate (ex. Titan)}
 
 \item{nmp}{- Nameplate (ex. ttn)}
-
-\item{mod_mod_obj}{- model mod_object}
 }
 \value{
 mod_obj

@@ -4,14 +4,12 @@
 \alias{Load_MSRPData}
 \title{Load_MSRPData}
 \usage{
-Load_MSRPData(mod_obj, input_file_MSRPData, NAMEPLATE = NULL)
+Load_MSRPData(mod_obj, input_file_MSRPData)
 }
 \arguments{
 \item{mod_obj}{- model mod_object}
 
 \item{input_file_MSRPData}{- path to MSRP data file.}
-
-\item{NAMEPLATE}{- Nameplate (ex. Titan)}
 }
 \value{
 mod_obj

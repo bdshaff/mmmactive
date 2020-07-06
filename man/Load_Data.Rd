@@ -7,19 +7,13 @@
 Load_Data(
   mod_obj,
   input_files = list(input_file_ModelData = NULL, input_file_FMIData = NULL,
-    input_file_SpendData = NULL, input_file_MSRPData = NULL),
-  NAMEPLATE = NULL,
-  nmp = NULL
+    input_file_SpendData = NULL, input_file_MSRPData = NULL)
 )
 }
 \arguments{
 \item{mod_obj}{- model mod_object}
 
 \item{input_files}{- paths to input files}
-
-\item{NAMEPLATE}{- Nameplate (ex. Titan)}
-
-\item{nmp}{- Nameplate (ex. ttn)}
 }
 \value{
 mod_obj

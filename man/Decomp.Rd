@@ -14,8 +14,6 @@ Decomp(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
 \item{max_ref}{- vector of variable indexes}
 
 \item{mean_ref}{- vector of variable indexes}
-
-\item{kpi}{- kpi variable string}
 }
 \value{
 mod_obj
