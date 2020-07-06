@@ -4,7 +4,6 @@
 #' The format of the output is compatible with the legacy reach generation function.
 #'
 #' @param mod_obj - model object
-#' @param kpi - kpi variable string
 #' @param min_ref - vector of variable indexes
 #' @param max_ref - vector of variable indexes
 #' @param mean_ref - vector of variable indexes
