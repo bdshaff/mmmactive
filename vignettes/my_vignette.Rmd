@@ -1,5 +1,7 @@
 ---
 title: "my_vignette"
+author: "Ben Denis Shaffer"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my_vignette}

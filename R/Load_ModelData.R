@@ -4,7 +4,6 @@
 #'
 #' @param mod_obj - model mod_object
 #' @param input_file_MSRPData - path to an .xlsx file with monthly and weekly data tabs.
-#' @param NAMEPLATE - Nameplate (ex. Titan)
 #'
 #' @return mod_obj
 #'
@@ -17,19 +16,19 @@ Load_ModelData <- function(mod_obj, input_file_ModelData) {
     stop("mod_obj missing group selector needed to load data.")
   }
 
-  datasheets <- excel_sheets(input_file_ModelData)
+  datasheets <- readxl::excel_sheets(input_file_ModelData)
 
   mod_obj$data_input <-
-    map(datasheets, ~ read_xlsx(input_file_ModelData, sheet = .x)) %>%
-    set_names(str_extract(datasheets, "weekly|monthly"))
+    purrr::map(datasheets, ~ readxl::read_xlsx(input_file_ModelData, sheet = .x)) %>%
+    rlang::set_names(stringr::str_extract(datasheets, "weekly|monthly"))
 
   groups <- names(mod_obj$data_group_selector)
 
-  if ("weekly" %in% str_extract(datasheets, "weekly|monthly")) {
+  if ("weekly" %in% stringr::str_extract(datasheets, "weekly|monthly")) {
     mod_obj$data_input$weekly <-
       mod_obj$data_input$weekly %>%
-      mutate(week = ymd(week)) %>%
-      group_by_at(vars(groups))
+      dplyr::mutate(week = ymd(week)) %>%
+      dplyr::group_by_at(dplyr::vars(groups))
 
     for (g in groups) {
       keep_vec <- unlist(mod_obj$data_input$weekly[, g]) %in% mod_obj$data_group_selector[[g]]
@@ -40,8 +39,8 @@ Load_ModelData <- function(mod_obj, input_file_ModelData) {
   if ("monthly" %in% str_extract(datasheets, "weekly|monthly")) {
     mod_obj$data_input$monthly <-
       mod_obj$data_input$monthly %>%
-      mutate(month = ymd(month)) %>%
-      group_by_at(vars(groups))
+      dplyr::mutate(month = ymd(month)) %>%
+      dplyr::group_by_at(dplyr::vars(groups))
 
     for (g in groups) {
       keep_vec <- unlist(mod_obj$data_input$monthly[, g]) %in% mod_obj$data_group_selector[[g]]

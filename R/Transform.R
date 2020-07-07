@@ -35,7 +35,7 @@ Transform <- function(mod_obj, print = TRUE) {
       data_input <- data_input[[1]]
 
       DFFS <-
-        map(1:nrow(spec_trans), ~ TransfromVar(
+        purrr::map(1:nrow(spec_trans), ~ TransfromVar(
           data_vector = data_input[[spec_trans$Orig_Variable[.x]]],
           spec_row = spec_trans[.x, ],
           fit_curves = fit_curves,
@@ -57,7 +57,7 @@ Transform <- function(mod_obj, print = TRUE) {
         group_by(!!sym(cross_section)) %>%
         group_split()
 
-      DFFS <- map(DFsplit, ~ TransformSplit(.x,
+      DFFS <- purrr::map(DFsplit, ~ TransformSplit(.x,
         spec_split = spec_tmp,
         fit_curves = fit_curves,
         print = print
@@ -67,7 +67,7 @@ Transform <- function(mod_obj, print = TRUE) {
       mod_obj$data <- data_input %>% bind_cols(DFFS)
       return(mod_obj)
     } else if (class(data_input) == "list") {
-      DFFS <- map(names(data_input), ~ TransformTemp(
+      DFFS <- purrr::map(names(data_input), ~ TransformTemp(
         data_tmp = data_input,
         spec_tmp = spec_trans,
         tmp = .x,

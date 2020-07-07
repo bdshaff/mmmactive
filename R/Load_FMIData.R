@@ -18,9 +18,9 @@ Load_FMIData <- function(mod_obj, input_file_FMIData) {
 
   FMI <-
     read.csv(input_file_FMIData, stringsAsFactors = FALSE) %>%
-    collect(n = Inf) %>%
-    filter(region == "100") %>%
-    filter(vehicle %in% c(
+    dplyr::collect(n = Inf) %>%
+    dplyr::filter(region == "100") %>%
+    dplyr::filter(vehicle %in% c(
       "alt", "arm", "fro", "lef", "max", "mur",
       "nv", "pth", "rge", "sen", "ttn", "ver"
     )) %>%

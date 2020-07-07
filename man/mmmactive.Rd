@@ -3,12 +3,30 @@
 \docType{package}
 \name{mmmactive}
 \alias{mmmactive}
-\title{mmmactive: A package for computating the notorious bar statistic.}
+\title{mmmactive: Implementation of MSMP framework for MMM workflows.}
 \description{
+This package implement a set of functions for MMM projects following the MSMP (Marketing Science Modeling Platform) framework.
+These functions are designed around a data structure of class `mod_obj` which is generally the first argument. The core functions of the
+package are names after a key step of an MMM workflow.
+\enumerate{
+      \item \code{Load_Data}
+      \item \code{Transform}
+      \item \code{Run_Model_Panel}
+      \item \code{Decomp + Unnest}
+      \item \code{Response}
+      \item \code{Media Mix Optimization}
+}
+}
+\section{Vignettes}{
+
 mmmactive package: browseVignettes(package = "mmmactive")
 }
-\section{Core Idea}{
 
-some desc
+\author{
+\itemize{
+     \item Ben Denis Shaffer (Maintainer),
+     \item Mansi Sheth,
+     \item Aiden Hu
+     \item Julia Liu
 }
-
+}

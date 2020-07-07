@@ -10,8 +10,6 @@ Load_ModelData(mod_obj, input_file_ModelData)
 \item{mod_obj}{- model mod_object}
 
 \item{input_file_MSRPData}{- path to an .xlsx file with monthly and weekly data tabs.}
-
-\item{NAMEPLATE}{- Nameplate (ex. Titan)}
 }
 \value{
 mod_obj

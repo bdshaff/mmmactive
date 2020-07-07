@@ -7,13 +7,9 @@
 Load_SpendData(mod_obj, input_file_SpendData)
 }
 \arguments{
+\item{mod_obj}{- model mod_object}
+
 \item{input_file_SpendData}{- path to the spend data file}
-
-\item{mod_mod_obj}{- model mod_object}
-
-\item{NAMEPLATE}{- Nameplate (ex. Titan)}
-
-\item{nmp}{- Nameplate (ex. ttn)}
 }
 \value{
 mod_obj

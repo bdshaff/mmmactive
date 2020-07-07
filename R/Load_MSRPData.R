@@ -18,8 +18,8 @@ Load_MSRPData <- function(mod_obj, input_file_MSRPData) {
 
   NAMEPLATE <- mod_obj$NAMEPLATE
 
-  Mtable <- read_csv(input_file_MSRPData) %>%
-    filter(Model == NAMEPLATE)
+  Mtable <- readr::read_csv(input_file_MSRPData) %>%
+    dplyr::filter(Model == NAMEPLATE)
 
   mod_obj$Mtable <- Mtable
   return(mod_obj)

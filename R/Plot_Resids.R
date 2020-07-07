@@ -31,16 +31,16 @@ Plot_Resids <- function(mod_obj, panel_name) {
     print("View all panel resids")
     DF <-
       x %>%
-      select(!!sym(cs), !!sym(ts), KPI, fitted, resid) %>%
-      group_by(!!sym(cs), !!sym(ts)) %>%
-      summarise(
+      dplyr::select(!!sym(cs), !!sym(ts), KPI, fitted, resid) %>%
+      dplyr::group_by(!!sym(cs), !!sym(ts)) %>%
+      dplyr::summarise(
         KPI = sum(KPI, na.rm = TRUE),
         fitted = sum(fitted, na.rm = TRUE),
         resid = sum(resid, na.rm = TRUE)
       )
 
     plot1 <-
-      ungroup(DF) %>%
+      dplyr::ungroup(DF) %>%
       ggplot(aes(!!sym(ts))) +
       geom_line(aes(y = KPI, colour = "Total Sales")) +
       geom_line(aes(y = fitted, colour = "Fitted Total Sales")) +

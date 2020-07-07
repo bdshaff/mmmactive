@@ -2,10 +2,8 @@
 #'
 #' Loads the spend data onto the mod_obj.
 #'
-#' @param mod_mod_obj - model mod_object
+#' @param mod_obj - model mod_object
 #' @param input_file_SpendData - path to the spend data file
-#' @param NAMEPLATE - Nameplate (ex. Titan)
-#' @param nmp - Nameplate (ex. ttn)
 #'
 #' @return mod_obj
 #'
@@ -22,20 +20,20 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
   nmp <- mod_obj$nmp
 
   Stable <-
-    read_csv(input_file_SpendData) %>%
-    mutate(Date = mdy(Date)) %>%
-    filter(
+    readr::read_csv(input_file_SpendData) %>%
+    dplyr::mutate(Date = mdy(Date)) %>%
+    dplyr::filter(
       Model == NAMEPLATE,
       Date >= "2018-10-01",
       Date <= "2019-09-01"
     ) %>%
-    mutate(
+    dplyr::mutate(
       FY = "FY19",
       media_agg = `Media Channel`,
       model_agg = nmp
     ) %>%
-    group_by(FY, model_agg, media_agg) %>%
-    summarise(Spend = sum(Spend, na.rm = TRUE))
+    dplyr::group_by(FY, model_agg, media_agg) %>%
+    dplyr::summarise(Spend = sum(Spend, na.rm = TRUE))
 
   mod_obj$Stable <- Stable
   return(mod_obj)
