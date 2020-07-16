@@ -8,7 +8,7 @@
 #' @param interactive - should the user be asked for Min and Max budget input. (only set TRUE when in an interactive session)
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, interactive = FALSE) {
 

@@ -1,5 +1,6 @@
 #' Test data_transformed mod_obj
 #'
+#' @export
 
 is.data_transformed <- function(mod_obj){
   nms <- c("data_transformed", "data")

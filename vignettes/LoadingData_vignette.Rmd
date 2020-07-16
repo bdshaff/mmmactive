@@ -1,0 +1,93 @@
+---
+title: "Loading Data"
+author: "Ben Denis Shaffer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Loading Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Functions for Loading Data
+
+The there five data loading functions, four for separate datasets needed to execute the analysis, and one that wraps around all four to load all data in one step:
+
+* Load_Data
+* Load_ModelData
+* Load_FMIData
+* Load_MSRPData
+* Load_SpendData
+
+# Model Data
+
+Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
+
+```{r, error=TRUE,  eval=FALSE}
+mod_obj <- Load_ModelData(mod_obj, input_file_ModelData)
+```
+
+* Element added to `mod_obj` : `input_data` (List of two: `monthly`, `weekly`)
+* Access via: `mod_obj$input_data` (List)
+* Access via: `mod_obj$input_data$weekly` (data.frame)
+* Access via: `mod_obj$input_data$monthly` (data.frame)
+
+# FMI Data
+
+Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
+
+```{r, error=TRUE,  eval=FALSE}
+mod_obj <- Load_ModelData(mod_obj, input_file_FMIData)
+```
+
+* Element added to `mod_obj` : `Ftable` 
+* Access via: `mod_obj$Ftable` (data.frame)
+
+# MSRP Data
+
+Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
+
+```{r, error=TRUE,  eval=FALSE}
+mod_obj <- Load_ModelData(mod_obj, input_file_MSRPData)
+```
+
+* Element added to `mod_obj` : `Mtable` 
+* Access via: `mod_obj$Mtable` (data.frame)
+
+# Spend Data
+
+Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
+
+```{r, error=TRUE,  eval=FALSE}
+mod_obj <- Load_ModelData(mod_obj, input_file_SpendData)
+```
+
+* Element added to `mod_obj` : `Stable` 
+* Access via: `mod_obj$Stable` (data.frame)
+
+
+# Load all Data at once
+
+You can load all of the data in one step using `Load_Data` which takes the  `mod_obj` and a list with the file paths.
+This function is a wrapper around the four functions described above. If only a subset of paths is supplied, the data for which the paths are given will be loaded, and a warning will be thrown indicating which data was not loaded.
+
+```{r, error=TRUE,  eval=FALSE}
+input_files = list(
+  input_file_ModelData,
+  input_file_FMIData,
+  input_file_SpendData,
+  input_file_MSRPData
+)
+
+mod_obj <- Load_Data(mod_obj, input_files)
+```
+
+* Element added to `mod_obj` : `input_data`, `Stable`, `Ftable`, `Mtable`
+* Access via: (see above).

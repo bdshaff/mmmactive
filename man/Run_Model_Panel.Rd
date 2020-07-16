@@ -17,6 +17,3 @@ mod_obj
 \description{
 Fitting an MMM model on top of a mod_obj
 }
-\examples{
-
-}

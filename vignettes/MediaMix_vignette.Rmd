@@ -1,10 +1,10 @@
 ---
-title: "Decomp and Unnesting"
+title: "Media Mix Optimization"
 author: "Ben Denis Shaffer"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Decomp and Unnesting}
+  %\VignetteIndexEntry{Media Mix Optimization}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

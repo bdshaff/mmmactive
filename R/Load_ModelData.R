@@ -3,10 +3,10 @@
 #' This function load the monthly and weekly level KPI and FMI data.
 #'
 #' @param mod_obj - model mod_object
-#' @param input_file_MSRPData - path to an .xlsx file with monthly and weekly data tabs.
+#' @param input_file_ModelData - path to an .xlsx file with monthly and weekly data tabs.
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Load_ModelData <- function(mod_obj, input_file_ModelData) {
   if (!is.mod_obj(mod_obj)) {

@@ -7,6 +7,8 @@
 #'
 #' @return mod_obj
 #'
+#' @importFrom magrittr %>%
+#' @export
 
 activate_model_spec <- function(mod_obj, input_file_ModelSpec) {
   if (!is.mod_obj(mod_obj)) {

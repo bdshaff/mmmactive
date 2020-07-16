@@ -1,5 +1,6 @@
 #' Test activated mod_obj
 #'
+#' @export
 
 is.activated <- function(x) {
   if (!is.mod_obj(x)) {

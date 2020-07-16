@@ -6,7 +6,7 @@
 #' @param mod_obj - model object
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Set_Date_Range <- function(mod_obj, na.rm = TRUE) {
   if (!is.mod_obj(mod_obj)) {

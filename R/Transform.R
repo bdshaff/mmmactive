@@ -6,7 +6,7 @@
 #' @param print - TRUE or FALSE
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Transform <- function(mod_obj, print = TRUE) {
   if (!is.mod_obj(mod_obj)) {

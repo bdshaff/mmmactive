@@ -1,21 +1,25 @@
 ---
-title: "my_vignette"
+title: "Transform"
 author: "Ben Denis Shaffer"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my_vignette}
+  %\VignetteIndexEntry{Transform}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
-library(mmmactive)
-```
+# TO DO
+
+* Transform
+* TransformSplit
+* TransformTemp
+* TransformTempJoin
+* TransformVar

@@ -6,7 +6,7 @@
 #' @param print
 #'
 #' @return data.frame
-#'
+#' @export
 
 TransformSplit <- function(data_split = NULL, spec_split = NULL, fit_curves = NULL, print = TRUE) {
   require(tidyverse)

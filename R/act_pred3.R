@@ -1,3 +1,7 @@
+#' act_pred
+#'
+#' @export
+
 
 #############################################################
 # this function creates actual vs predicted in a dataframe given the model object

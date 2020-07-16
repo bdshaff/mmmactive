@@ -8,7 +8,7 @@
 #' @param regions  - character vectors
 #'
 #' @return mod_obj
-#'
+#' @export
 
 add_group_selector <- function(mod_obj, vehicles, regions) {
   mod_obj$data_group_selector <-

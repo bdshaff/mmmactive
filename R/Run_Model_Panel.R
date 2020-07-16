@@ -8,7 +8,7 @@
 #' @return mod_obj
 #'
 #' @examples
-#'
+#' @export
 
 Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
   if (!is.activated(mod_obj)) {

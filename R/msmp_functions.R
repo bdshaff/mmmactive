@@ -1,4 +1,6 @@
-
+#' funcs
+#'
+#' @export
 
 AdResponse <- function(afGRPsMat, afCoeffsMat, params) {
   # Generate the Effective Cover of a vector of input GRPs

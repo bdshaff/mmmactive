@@ -6,7 +6,7 @@
 #' @param input_file_MSRPData - path to MSRP data file.
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Load_MSRPData <- function(mod_obj, input_file_MSRPData) {
   if (!is.mod_obj(mod_obj)) {

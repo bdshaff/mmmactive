@@ -6,7 +6,7 @@
 #' @param panel_name  - panel name
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Plot_Resids <- function(mod_obj, panel_name) {
 

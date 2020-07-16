@@ -6,7 +6,7 @@
 #' @param input_file_ModelFitCurves - file path
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Load_FitCurves <- function(mod_obj, input_file_ModelFitCurves) {
   if (!is.mod_obj(mod_obj)) {

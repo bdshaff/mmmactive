@@ -6,7 +6,7 @@
 #' @param print
 #'
 #' @return data.frame
-#'
+#' @export
 
 TransformTemp <- function(data_tmp = NULL, spec_tmp = NULL, tmp = NULL, fit_curves = NULL, cross_section = NULL, print = TRUE) {
   require(tidyverse)

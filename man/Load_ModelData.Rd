@@ -9,7 +9,7 @@ Load_ModelData(mod_obj, input_file_ModelData)
 \arguments{
 \item{mod_obj}{- model mod_object}
 
-\item{input_file_MSRPData}{- path to an .xlsx file with monthly and weekly data tabs.}
+\item{input_file_ModelData}{- path to an .xlsx file with monthly and weekly data tabs.}
 }
 \value{
 mod_obj

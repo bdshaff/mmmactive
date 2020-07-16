@@ -9,7 +9,7 @@
 #' @param mean_ref - vector of variable indexes
 #'
 #' @return mod_obj
-#'
+#' @export
 
 
 Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {

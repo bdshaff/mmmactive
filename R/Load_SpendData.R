@@ -6,7 +6,7 @@
 #' @param input_file_SpendData - path to the spend data file
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Load_SpendData <- function(mod_obj, input_file_SpendData) {
   if (!is.mod_obj(mod_obj)) {

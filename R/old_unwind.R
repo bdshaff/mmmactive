@@ -1,3 +1,8 @@
+#' unwind
+#'
+#'@export
+#'
+
 unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRUE,
                    expandPeriodToLongest = FALSE, demo = FALSE) {
   Base <- "ModelKPI"

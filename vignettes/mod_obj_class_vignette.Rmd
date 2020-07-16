@@ -14,52 +14,107 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+#library(tidyverse)
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+# `mod_obj` class
 
-## Vignette Info
+In this package we introduce a data structure object called `mod_obj`. Underneath, this is a named R list. The functionality of this package revolves around this `mod_obj` structure, and therefore you will notice that the first, and often only, argument to a function is a `mod_obj`. By design the supplied `mod_obj` is not modified in place, but instead returned. The implication is that you may store the `mod_obj` created for you analysis at every step of analysis, however this is not recommended.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
 
-## Styles
+# Initiating a `mod_obj`
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+To create a `mod_obj` we simply call the `create_mod_obj` function. You can see that this is an empty list, with the additional mob_obj class.
+```{r}
+library(mmmactive)
+mod_obj <- create_mod_obj()
+mod_obj
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+# States of the `mob_obj`
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+As the analysis progresses the states of the `mob_obj` changes with new elements added to the list. These states have a hierarchy, meaning that some steps of an analysis may only we called onto a `mob_obj` after a different one was completed. For example, you may not apply `Transfrom` unless `Load_Data` has been applied.
 
-## More Examples
+The following states (and functions to check them) are currently implemented, listed in the order of hierarchy:
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+* `is.mod_obj`
+* `is.activated`
+* `is.load_data_ready`
+* `is.data_transformed`
+* `is.modeled`
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r}
+is.mod_obj(mod_obj)
 ```
 
-Also a quote using `>`:
+Because we created a `mod_obj` this will evaluate to TRUE.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+The rest of the state-checks will be FALSE. In addition to returning FALSE, the checkers try to throw a useful warning message indicating what element is missing for the state to be TRUE.
+
+```{r}
+is.activated(mod_obj)
+```
+
+
+```{r}
+is.load_data_ready(mod_obj)
+```
+
+```{r}
+is.data_transformed(mod_obj)
+```
+
+```{r}
+is.modeled(mod_obj)
+```
+
+
+# `mod_obj` activation
+
+Before beginning the modeling analysis with the `mod_obj`, we must activate the `mod_obj`
+Within the MSMP framework we must have two activation input files. 
+
+```{r, echo=FALSE}
+mod_obj$ModelForm <- ""
+mod_obj$Panel <- ""
+mod_obj$Time <- ""
+mod_obj$BeginDate <- ""
+mod_obj$EndDate <- ""
+mod_obj$SimStart <- ""
+mod_obj$SimEnd <- ""
+mod_obj$mroi_step <- ""
+mod_obj$cs <- ""
+mod_obj$kpi <- ""
+```
+
+```{r error=TRUE, eval=FALSE}
+mod_obj <- activate_model_setup(mod_obj, 
+                                input_file_ModelSetup = "PATH TO YOUR MODEL SETUP .csv FILE")
+```
+
+We can see that when the following elements have been added to the `mod_obj` we only get a warning that `spec` is missing.
+
+```{r}
+names(mod_obj)
+is.activated(mod_obj)
+```
+
+
+```{r, error=TRUE, eval=FALSE}
+mod_obj <- activate_model_spec(mod_obj, 
+                               input_file_ModelSpec = "PATH TO YOUR MODEL SPEC .csv FILE")
+```
+
+```{r, echo=FALSE}
+mod_obj$spec<- ""
+```
+
+Finally, when `activate_model_spec` is run, and `spec` is added to the `mod_obj`, `is.activated` is evaluated to TRUE, and the model object is activated. 
+
+```{r}
+names(mod_obj)
+is.activated(mod_obj)
+```

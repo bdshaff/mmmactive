@@ -7,6 +7,7 @@
 #'
 #' @return mod_obj
 #'
+#' @export
 
 activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
   if (!is.mod_obj(mod_obj)) {

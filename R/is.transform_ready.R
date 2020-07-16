@@ -1,5 +1,6 @@
 #' Test transform_ready mod_obj
 #'
+#' @export
 
 is.transform_ready <- function(mod_obj){
   nms <- c("data_input", "fit_curves")

@@ -6,7 +6,7 @@
 #' @param input_file_FMIData - path to FMI data file
 #'
 #' @return mod_obj
-#'
+#' @export
 
 Load_FMIData <- function(mod_obj, input_file_FMIData) {
   if (!is.mod_obj(mod_obj)) {

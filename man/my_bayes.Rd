@@ -6,9 +6,6 @@
 \usage{
 my_bayes(formula, data, priors = NULL)
 }
-\arguments{
-\item{priors}{}
-}
 \description{
 my_bayes
 }

@@ -7,6 +7,7 @@
 #' @param input_files - paths to input files
 #'
 #' @return mod_obj
+#' @export
 
 
 Load_Data <- function(mod_obj, input_files = list(

@@ -1,5 +1,6 @@
 #' Test modeled mod_obj
 #'
+#' @export
 
 is.modeled <- function(mod_obj){
   nms <- c("Model", "lmModel")

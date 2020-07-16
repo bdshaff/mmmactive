@@ -3,7 +3,7 @@
 #' @param data_input
 #' @param DFFS
 #' @param trans_variable
-#'
+#' @export
 
 TransformTempJoin <- function(data_input, DFFS, trans_variable) {
   DF <- list()

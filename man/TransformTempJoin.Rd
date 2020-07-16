@@ -6,9 +6,6 @@
 \usage{
 TransformTempJoin(data_input, DFFS, trans_variable)
 }
-\arguments{
-\item{trans_variable}{}
-}
 \description{
 TransformTempJoin
 }

@@ -3,7 +3,7 @@
 #' @param formula
 #' @param data
 #' @param priors
-#'
+#' @export
 
 my_bayes <- function(formula, data, priors = NULL) {
   big_number <- 10000 # for difuse priors
