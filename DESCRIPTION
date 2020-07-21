@@ -25,6 +25,7 @@ Imports:
     forcats, 
     lubridate, 
     readxl, 
+    magrittr,
     car
 RoxygenNote: 7.1.1
 Suggests: 

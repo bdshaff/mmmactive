@@ -7,6 +7,7 @@
 #'
 #' @return mod_obj
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
@@ -14,7 +15,7 @@ activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
     stop("Input must be of class mod_obj.")
   }
 
-  Model_setup <- readr::read_csv(input_file_ModelSetup, col_types = cols())
+  Model_setup <- readr::read_csv(input_file_ModelSetup, col_types = readr::cols())
   mod_obj$ModelForm <- Model_setup$Value[Model_setup$Parameter == "ModelForm"]
   mod_obj$Panel <- Model_setup$Value[Model_setup$Parameter == "Panel"]
   mod_obj$Time <- Model_setup$Value[Model_setup$Parameter == "Time"]

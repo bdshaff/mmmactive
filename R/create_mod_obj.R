@@ -1,5 +1,6 @@
 #' Create mod_obj
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 create_mod_obj <- function() {

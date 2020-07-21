@@ -16,7 +16,7 @@ Load_FitCurves <- function(mod_obj, input_file_ModelFitCurves) {
   datasheets <- readxl::excel_sheets(input_file_ModelFitCurves)
 
   mod_obj$fit_curves <-
-    purrr::map(datasheets, ~ janitor::clean_names(read_xlsx(input_file_ModelFitCurves, sheet = .x))) %>%
+    purrr::map(datasheets, ~ janitor::clean_names(readxl::read_xlsx(input_file_ModelFitCurves, sheet = .x))) %>%
     rlang::set_names(stringr::str_replace(stringr::str_extract(datasheets, "_[a-zA-Z0-9.-]*$"), "_", ""))
 
   return(mod_obj)

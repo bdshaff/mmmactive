@@ -5,6 +5,7 @@
 #' @param fit_curves
 #' @param print
 #'
+#' @import RcppRoll
 #' @return vector - transformed data_vector
 #' @export
 
@@ -49,7 +50,7 @@ TransformVar <- function(data_vector = NULL, spec_row = NULL, fit_curves = NULL,
       }
     }
     if (type[i] == "ADSTOCKV3") {
-      data_vector_transform <- adstockv3(data_vector, spec$Decay[i], spec$Peak[i], spec$Length[i])
+      data_vector_transform <- adstockv3(data_vector_transform, spec$Decay[i], spec$Peak[i], spec$Length[i])
     }
     if (type[i] == "LAG") {
       data_vector_transform <- lag(data_vector_transform, spec_row$Lag, default = 0)

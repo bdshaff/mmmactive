@@ -16,6 +16,23 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r message=FALSE}
+library(mmmactive)
+library(tidyverse)
+input_file_ModelSetup =  here::here("data/ttn-ModelSetup.csv")
+input_file_ModelSpec = here::here("data/ttn-ModelSpec.csv")
+nmp <- "ttn"
+rgn <- c("CR", "MAR", "MTN", "MWR", "NER", "NWR", "SER", "WR")
+
+mod_obj <- create_mod_obj()
+mod_obj <- mod_obj %>% 
+  activate_model_setup(input_file_ModelSetup) %>%
+  activate_model_spec(input_file_ModelSpec)
+
+mod_obj <- add_group_selector(mod_obj, vehicles = nmp, regions = rgn)
+```
+
+
 # Functions for Loading Data
 
 The there five data loading functions, four for separate datasets needed to execute the analysis, and one that wraps around all four to load all data in one step:
@@ -30,7 +47,8 @@ The there five data loading functions, four for separate datasets needed to exec
 
 Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
 
-```{r, error=TRUE,  eval=FALSE}
+```{r warning=FALSE}
+input_file_ModelData = here::here("data","ModelData.xlsx")
 mod_obj <- Load_ModelData(mod_obj, input_file_ModelData)
 ```
 
@@ -39,51 +57,75 @@ mod_obj <- Load_ModelData(mod_obj, input_file_ModelData)
 * Access via: `mod_obj$input_data$weekly` (data.frame)
 * Access via: `mod_obj$input_data$monthly` (data.frame)
 
+```{r}
+glimpse(mod_obj$data_input$monthly)
+```
+
+
+```{r}
+glimpse(mod_obj$data_input$weekly)
+```
+
 # FMI Data
 
-Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
+A separate FMI data still needs to be loaded only in order to comply with the legacy code when you get to Response Curve generation. For modeling this data is not needed.
 
-```{r, error=TRUE,  eval=FALSE}
-mod_obj <- Load_ModelData(mod_obj, input_file_FMIData)
+```{r warning=FALSE}
+input_file_FMIData = here::here("data","FMI.csv")
+mod_obj <- Load_FMIData(mod_obj, input_file_FMIData)
 ```
 
 * Element added to `mod_obj` : `Ftable` 
 * Access via: `mod_obj$Ftable` (data.frame)
 
+```{r}
+glimpse(mod_obj$Ftable)
+```
+
 # MSRP Data
 
 Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
 
-```{r, error=TRUE,  eval=FALSE}
-mod_obj <- Load_ModelData(mod_obj, input_file_MSRPData)
+```{r warning=FALSE}
+input_file_MSRPData <- here::here("data","MSRPData.csv")
+mod_obj <- Load_MSRPData(mod_obj, input_file_MSRPData)
 ```
 
 * Element added to `mod_obj` : `Mtable` 
 * Access via: `mod_obj$Mtable` (data.frame)
 
+```{r}
+mod_obj$Mtable
+```
+
 # Spend Data
 
 Model Data consists of two datasets that are saved in an excel file. This file has two sheets/tabs, one with data variables aggregated to monthly level, and another with weekly level.
 
-```{r, error=TRUE,  eval=FALSE}
-mod_obj <- Load_ModelData(mod_obj, input_file_SpendData)
+```{r warning=FALSE}
+input_file_SpendData <- here::here("data","SpendData.csv")
+mod_obj <- Load_SpendData(mod_obj, input_file_SpendData)
 ```
 
 * Element added to `mod_obj` : `Stable` 
 * Access via: `mod_obj$Stable` (data.frame)
 
+```{r}
+mod_obj$Stable
+```
 
 # Load all Data at once
 
 You can load all of the data in one step using `Load_Data` which takes the  `mod_obj` and a list with the file paths.
 This function is a wrapper around the four functions described above. If only a subset of paths is supplied, the data for which the paths are given will be loaded, and a warning will be thrown indicating which data was not loaded.
 
-```{r, error=TRUE,  eval=FALSE}
+`input_files` MUST BE NAMED!!!
+```{r warning=FALSE}
 input_files = list(
-  input_file_ModelData,
-  input_file_FMIData,
-  input_file_SpendData,
-  input_file_MSRPData
+  input_file_ModelData = input_file_ModelData,
+  input_file_FMIData = input_file_FMIData,
+  input_file_SpendData = input_file_SpendData,
+  input_file_MSRPData = input_file_MSRPData
 )
 
 mod_obj <- Load_Data(mod_obj, input_files)

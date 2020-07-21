@@ -29,6 +29,9 @@
 #' Vignettes:
 #' mmmactive package: browseVignettes(package = "mmmactive")
 #'
+#' @import lubridate
+#' @import stringr
+#'
 #' @docType package
 #' @name mmmactive
 NULL

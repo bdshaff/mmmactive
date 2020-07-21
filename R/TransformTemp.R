@@ -27,7 +27,6 @@ TransformTemp <- function(data_tmp = NULL, spec_tmp = NULL, tmp = NULL, fit_curv
   spec_tmp <- spec_tmp %>% filter(Orig_Variable %in% names(data_tmp[[tmp]]))
   tmpDF <- data_tmp[[tmp]] %>% select(one_of(spec_tmp$Orig_Variable))
 
-  # tmpDFsplit = tmpDF %>% group_by(vehicle) %>% group_split()
   tmpDFsplit <- tmpDF %>%
     group_by(!!sym(cross_section)) %>%
     group_split()

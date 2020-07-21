@@ -27,7 +27,7 @@ Load_ModelData <- function(mod_obj, input_file_ModelData) {
   if ("weekly" %in% stringr::str_extract(datasheets, "weekly|monthly")) {
     mod_obj$data_input$weekly <-
       mod_obj$data_input$weekly %>%
-      dplyr::mutate(week = ymd(week)) %>%
+      dplyr::mutate(week = lubridate::ymd(week)) %>%
       dplyr::group_by_at(dplyr::vars(groups))
 
     for (g in groups) {

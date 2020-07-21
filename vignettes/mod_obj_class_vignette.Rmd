@@ -14,8 +14,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-#library(tidyverse)
 ```
 
 
@@ -27,8 +25,9 @@ In this package we introduce a data structure object called `mod_obj`. Underneat
 # Initiating a `mod_obj`
 
 To create a `mod_obj` we simply call the `create_mod_obj` function. You can see that this is an empty list, with the additional mob_obj class.
-```{r}
+```{r message=FALSE}
 library(mmmactive)
+library(tidyverse)
 mod_obj <- create_mod_obj()
 mod_obj
 ```
@@ -77,22 +76,10 @@ is.modeled(mod_obj)
 Before beginning the modeling analysis with the `mod_obj`, we must activate the `mod_obj`
 Within the MSMP framework we must have two activation input files. 
 
-```{r, echo=FALSE}
-mod_obj$ModelForm <- ""
-mod_obj$Panel <- ""
-mod_obj$Time <- ""
-mod_obj$BeginDate <- ""
-mod_obj$EndDate <- ""
-mod_obj$SimStart <- ""
-mod_obj$SimEnd <- ""
-mod_obj$mroi_step <- ""
-mod_obj$cs <- ""
-mod_obj$kpi <- ""
-```
 
-```{r error=TRUE, eval=FALSE}
-mod_obj <- activate_model_setup(mod_obj, 
-                                input_file_ModelSetup = "PATH TO YOUR MODEL SETUP .csv FILE")
+```{r}
+input_file_ModelSetup =  here::here("data","ttn-ModelSetup.csv")
+mod_obj <- activate_model_setup(mod_obj, input_file_ModelSetup)
 ```
 
 We can see that when the following elements have been added to the `mod_obj` we only get a warning that `spec` is missing.
@@ -103,18 +90,52 @@ is.activated(mod_obj)
 ```
 
 
-```{r, error=TRUE, eval=FALSE}
-mod_obj <- activate_model_spec(mod_obj, 
-                               input_file_ModelSpec = "PATH TO YOUR MODEL SPEC .csv FILE")
-```
-
-```{r, echo=FALSE}
-mod_obj$spec<- ""
+```{r}
+input_file_ModelSpec = here::here("data","ttn-ModelSpec.csv")
+mod_obj <- activate_model_spec(mod_obj, input_file_ModelSpec)
 ```
 
 Finally, when `activate_model_spec` is run, and `spec` is added to the `mod_obj`, `is.activated` is evaluated to TRUE, and the model object is activated. 
 
 ```{r}
 names(mod_obj)
+```
+
+```{r}
 is.activated(mod_obj)
+```
+
+
+# `mod_obj` add_group_selector
+
+When the `mod_obj` is activated it may receive the cross-section element `cs`. If this element is present then a group selector is necessary to provide information about which levels of the cross-section should be included. Otherwise data can not be loaded.
+
+```{r}
+is.load_data_ready(mod_obj)
+```
+
+
+For example, here we are including 8 regions.
+
+```{r}
+rgn <- c("CR", "MAR", "MTN", "MWR", "NER", "NWR", "SER", "WR")
+mod_obj <- add_group_selector(mod_obj, vehicles = mod_obj$nmp, regions = rgn)
+```
+
+Now we have the `data_group_selector` element which will allow us to go on and load data.
+
+```{r}
+mod_obj$data_group_selector
+```
+
+```{r}
+is.load_data_ready(mod_obj)
+```
+
+# Model Spec
+
+Describe the `spec` element
+
+```{r}
+mod_obj$spec
 ```
