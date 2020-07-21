@@ -1,9 +1,9 @@
 #' TransformSplit
 #'
-#' @param data_split
-#' @param spec_split
-#' @param fit_curves
-#' @param print
+#' @param data_split - data.frame, slice of a data.
+#' @param spec_split - spec
+#' @param fit_curves - fit curves
+#' @param print - logical
 #'
 #' @return data.frame
 #' @export
@@ -26,7 +26,7 @@ TransformSplit <- function(data_split = NULL, spec_split = NULL, fit_curves = NU
   }
 
   data_split_transform <-
-    map(1:nrow(spec_split), ~ TransformVar(
+    purrr::map(1:nrow(spec_split), ~ TransformVar(
       data_vector = data_split[[spec_split$Orig_Variable[.x]]],
       spec_row = spec_split[.x, ],
       fit_curves = fit_curves,

@@ -1,5 +1,7 @@
 #' Test mod_obj
 #'
+#' @param x - mod_obj
+#'
 #' @export
 
 is.mod_obj = function(x){

@@ -6,6 +6,9 @@
 \usage{
 is.data_transformed(mod_obj)
 }
+\arguments{
+\item{x}{- mod_obj}
+}
 \description{
 Test data_transformed mod_obj
 }

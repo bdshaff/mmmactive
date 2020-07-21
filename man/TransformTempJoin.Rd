@@ -6,6 +6,13 @@
 \usage{
 TransformTempJoin(data_input, DFFS, trans_variable)
 }
+\arguments{
+\item{data_input}{- list of weekly and monthly data.frames}
+
+\item{DFFS}{- list of split data.frames}
+
+\item{trans_variable}{- variable}
+}
 \description{
 TransformTempJoin
 }

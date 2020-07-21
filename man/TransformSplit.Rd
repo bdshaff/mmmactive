@@ -12,7 +12,13 @@ TransformSplit(
 )
 }
 \arguments{
-\item{print}{}
+\item{data_split}{- data.frame, slice of a data.}
+
+\item{spec_split}{- spec}
+
+\item{fit_curves}{- fit curves}
+
+\item{print}{- logical}
 }
 \value{
 data.frame

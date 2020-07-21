@@ -8,6 +8,8 @@ Set_Date_Range(mod_obj, na.rm = TRUE)
 }
 \arguments{
 \item{mod_obj}{- model object}
+
+\item{na.rm}{- logical}
 }
 \value{
 mod_obj

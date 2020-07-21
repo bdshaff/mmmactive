@@ -27,7 +27,6 @@ In this package we introduce a data structure object called `mod_obj`. Underneat
 To create a `mod_obj` we simply call the `create_mod_obj` function. You can see that this is an empty list, with the additional mob_obj class.
 ```{r message=FALSE}
 library(mmmactive)
-library(tidyverse)
 mod_obj <- create_mod_obj()
 mod_obj
 ```

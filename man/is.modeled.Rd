@@ -6,6 +6,9 @@
 \usage{
 is.modeled(mod_obj)
 }
+\arguments{
+\item{x}{- mod_obj}
+}
 \description{
 Test modeled mod_obj
 }

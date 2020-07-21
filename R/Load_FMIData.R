@@ -24,13 +24,22 @@ Load_FMIData <- function(mod_obj, input_file_FMIData) {
       "alt", "arm", "fro", "lef", "max", "mur",
       "nv", "pth", "rge", "sen", "ttn", "ver"
     )) %>%
-    mutate(week = ymd(week))
+    dplyr::mutate(week = ymd(week))
 
-  Ftable <-
-    data.table::dcast(FMI, vehicle + week ~ var + type + tier,
-      value.var = "value",
-      fun.aggregate = sum
-    ) %>% as.data.frame(.)
+  # Ftable <-
+  #   reshape2::dcast(FMI, vehicle + week ~ var + type + tier,
+  #     value.var = "value",
+  #     fun.aggregate = sum
+  #   ) %>% as.data.frame(.)
+
+  Ftable <- FMI %>%
+    dplyr::select(vehicle, week, var, type, tier, value) %>%
+    tidyr::pivot_wider(names_from = c(var, type, tier),
+                       values_from = value,
+                       values_fn = function(x) sum(x, na.rm = TRUE),
+                       values_fill = 0) %>%
+    dplyr::arrange(vehicle, week) %>%
+    as.data.frame()
 
   Ftable[is.na(Ftable)] <- 0
 

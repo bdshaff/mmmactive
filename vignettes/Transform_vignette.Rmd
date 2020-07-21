@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 
 ```{r message=FALSE, warning=FALSE}
 library(mmmactive)
-library(tidyverse)
 
 nmp <- "ttn"
 rgn <- c("CR", "MAR", "MTN", "MWR", "NER", "NWR", "SER", "WR")
@@ -40,11 +39,10 @@ input_files = list(
 
 
 mod_obj <- create_mod_obj()
-mod_obj <- mod_obj %>% 
-  activate_model_setup(input_file_ModelSetup) %>%
-  activate_model_spec(input_file_ModelSpec) %>% 
-  add_group_selector(vehicles = nmp, regions = rgn) %>%
-  Load_Data(input_files)
+mod_obj <- activate_model_setup(mod_obj, input_file_ModelSetup)
+mod_obj <- activate_model_spec(mod_obj, input_file_ModelSpec)
+mod_obj <- add_group_selector(mod_obj, vehicles = nmp, regions = rgn)
+mod_obj <- Load_Data(mod_obj, input_files)
 
 is.transform_ready(mod_obj)
 ```
@@ -81,19 +79,19 @@ mod_obj <- Transform(mod_obj, print = FALSE)
 
 ### Monthly Level 
 ```{r}
-glimpse(mod_obj$data_transformed$monthly)
+str(mod_obj$data_transformed$monthly, max.level = 2)
 ```
 
 
 ### Monthly Level 
 ```{r}
-glimpse(mod_obj$data_transformed$weekly)
+str(mod_obj$data_transformed$weekly, max.level = 2)
 ```
 
 
 ### Combined Data 
 ```{r}
-glimpse(mod_obj$data)
+str(mod_obj$data, max.level = 2)
 ```
 
 ## Verbose
@@ -132,7 +130,7 @@ data_vector_transformed =
 plot(data_vector, data_vector_transformed)
 ```
 
-Here is an example of how `TransformVar` can be given any vector, here numbers from 1-200. We keep the same transofrmation instructions as in the above.
+Here is an example of how `TransformVar` can be given any vector, here numbers from 1-200. We keep the same transformation instructions as in the above.
 
 ```{r}
 data_vector = 1:200

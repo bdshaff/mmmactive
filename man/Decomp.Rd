@@ -4,7 +4,7 @@
 \alias{Decomp}
 \title{Model Decomposition and Contribution Calculations}
 \usage{
-Decomp(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
+Decomp(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL)
 }
 \arguments{
 \item{mod_obj}{- model object}

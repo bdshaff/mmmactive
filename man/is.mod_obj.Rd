@@ -6,6 +6,9 @@
 \usage{
 is.mod_obj(x)
 }
+\arguments{
+\item{x}{- mod_obj}
+}
 \description{
 Test mod_obj
 }

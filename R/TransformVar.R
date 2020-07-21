@@ -1,9 +1,9 @@
 #' TransformVar
 #'
-#' @param data_vector
-#' @param spec_row
-#' @param fit_curves
-#' @param print
+#' @param data_vector - vector
+#' @param spec_row - row from spec table
+#' @param fit_curves - fit curves
+#' @param print - logical
 #'
 #' @import RcppRoll
 #' @return vector - transformed data_vector

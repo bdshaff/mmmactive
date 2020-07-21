@@ -1,8 +1,8 @@
 #' my_bayes
 #'
-#' @param formula
-#' @param data
-#' @param priors
+#' @param formula - formula
+#' @param data - data
+#' @param priors - priors
 #' @export
 
 my_bayes <- function(formula, data, priors = NULL) {

@@ -6,6 +6,9 @@
 \usage{
 is.activated(x)
 }
+\arguments{
+\item{x}{- mod_obj}
+}
 \description{
 Test activated mod_obj
 }

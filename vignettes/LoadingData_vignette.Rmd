@@ -17,18 +17,17 @@ knitr::opts_chunk$set(
 ```
 
 ```{r message=FALSE}
+#library(tidyverse)
 library(mmmactive)
-library(tidyverse)
-input_file_ModelSetup =  here::here("data/ttn-ModelSetup.csv")
-input_file_ModelSpec = here::here("data/ttn-ModelSpec.csv")
+input_file_ModelSetup =  here::here("data","ttn-ModelSetup.csv")
+input_file_ModelSpec = here::here("data","ttn-ModelSpec.csv")
 nmp <- "ttn"
 rgn <- c("CR", "MAR", "MTN", "MWR", "NER", "NWR", "SER", "WR")
 
 mod_obj <- create_mod_obj()
-mod_obj <- mod_obj %>% 
-  activate_model_setup(input_file_ModelSetup) %>%
-  activate_model_spec(input_file_ModelSpec)
-
+mod_obj <- mod_obj
+mod_obj <- activate_model_setup(mod_obj, input_file_ModelSetup)
+mod_obj <- activate_model_spec(mod_obj, input_file_ModelSpec)
 mod_obj <- add_group_selector(mod_obj, vehicles = nmp, regions = rgn)
 ```
 
@@ -58,12 +57,12 @@ mod_obj <- Load_ModelData(mod_obj, input_file_ModelData)
 * Access via: `mod_obj$input_data$monthly` (data.frame)
 
 ```{r}
-glimpse(mod_obj$data_input$monthly)
+str(mod_obj$data_input$monthly, max.level = 2)
 ```
 
 
 ```{r}
-glimpse(mod_obj$data_input$weekly)
+str(mod_obj$data_input$weekly, max.level = 2)
 ```
 
 # FMI Data
@@ -79,7 +78,7 @@ mod_obj <- Load_FMIData(mod_obj, input_file_FMIData)
 * Access via: `mod_obj$Ftable` (data.frame)
 
 ```{r}
-glimpse(mod_obj$Ftable)
+str(mod_obj$Ftable)
 ```
 
 # MSRP Data

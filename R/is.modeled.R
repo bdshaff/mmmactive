@@ -1,5 +1,7 @@
 #' Test modeled mod_obj
 #'
+#' @param x - mod_obj
+#'
 #' @export
 
 is.modeled <- function(mod_obj){

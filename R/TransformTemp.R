@@ -1,9 +1,11 @@
 #' TransformTemp
 #'
-#' @param data_tmp
-#' @param spec_tmp
-#' @param fit_curves
-#' @param print
+#' @param data_tmp - weekly or monthly input data
+#' @param spec_tmp - spec
+#' @param fit_curves - fit curves
+#' @param print - logical
+#' @param tmp - time agg level
+#' @param cross_section - cross_section level
 #'
 #' @return data.frame
 #' @export
@@ -24,21 +26,21 @@ TransformTemp <- function(data_tmp = NULL, spec_tmp = NULL, tmp = NULL, fit_curv
     warning("Input fit_curves is NULL")
   }
 
-  spec_tmp <- spec_tmp %>% filter(Orig_Variable %in% names(data_tmp[[tmp]]))
-  tmpDF <- data_tmp[[tmp]] %>% select(one_of(spec_tmp$Orig_Variable))
+  spec_tmp <- spec_tmp %>% dplyr::filter(Orig_Variable %in% names(data_tmp[[tmp]]))
+  tmpDF <- data_tmp[[tmp]] %>% dplyr::select(tidyselect::one_of(spec_tmp$Orig_Variable))
 
   tmpDFsplit <- tmpDF %>%
-    group_by(!!sym(cross_section)) %>%
-    group_split()
+    dplyr::group_by(!!rlang::sym(cross_section)) %>%
+    dplyr::group_split()
 
   tmpDFtransform <-
-    map(tmpDFsplit, ~ TransformSplit(.x,
+    purrr::map(tmpDFsplit, ~ TransformSplit(.x,
       spec_split = spec_tmp,
       fit_curves = fit_curves,
       print = print
-    )) %>% bind_rows()
+    )) %>% dplyr::bind_rows()
 
-  tmpDF <- tmpDF %>% bind_cols(tmpDFtransform)
+  tmpDF <- tmpDF %>% dplyr::bind_cols(tmpDFtransform)
 
   return(tmpDF)
 }

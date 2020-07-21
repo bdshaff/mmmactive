@@ -26,6 +26,7 @@ Imports:
     lubridate, 
     readxl, 
     magrittr,
+    janitor,
     car,
     RcppRoll
 RoxygenNote: 7.1.1

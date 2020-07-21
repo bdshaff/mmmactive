@@ -8,11 +8,12 @@
 #' @param max_ref - vector of variable indexes
 #' @param mean_ref - vector of variable indexes
 #'
+#' @importFrom magrittr %>%
 #' @return mod_obj
 #' @export
 
 
-Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
+Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
   if (!is.modeled(mod_obj)) {
     stop("mod_obj must have a fitted model to run model decomposition.")
   }
@@ -25,25 +26,45 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
   spec <- mod_obj$spec
 
   dpnd_var <- spec %>%
-    filter(Variable_Type == "Dependent") %>%
-    pull(Trans_Variable)
+    dplyr::filter(Variable_Type == "Dependent") %>%
+    dplyr::pull(Trans_Variable)
+
   dpnd_var_raw <- str_remove(dpnd_var, "_trans")
+
   indp_var <- spec %>%
-    filter(Variable_Type != "Dependent") %>%
-    pull(Trans_Variable)
+    dplyr::filter(Variable_Type != "Dependent") %>%
+    dplyr::pull(Trans_Variable)
 
   mod_form <- toupper(mod_obj$ModelForm)
   mod_coef <- mod_obj$Model$coefficients
 
   kpi_data <- mod_obj$data_input$monthly %>%
-    ungroup() %>%
-    select(!!sym(cs), !!sym(ts), !!sym(kpi))
+    dplyr::ungroup() %>%
+    dplyr::select(
+      !!rlang::sym(cs),
+      !!rlang::sym(ts),
+      !!rlang::sym(kpi)
+    )
 
-  conversion <- bind_cols(mod_obj$data_input$monthly %>%
-    select(!!sym(ts), !!sym(cs), !!sym(kpi)), mod_obj$data_transformed$monthly %>% ungroup() %>% select(sales_div_tiv_trans)) %>%
-    ungroup() %>%
-    select(!!sym(ts), !!sym(cs), !!sym(kpi), !!sym(dpnd_var)) %>%
-    mutate(conv = !!sym(kpi) / !!sym(dpnd_var))
+  conversion <- dplyr::bind_cols(
+    mod_obj$data_input$monthly %>%
+      dplyr::select(
+        !!rlang::sym(ts),
+        !!rlang::sym(cs),
+        !!rlang::sym(kpi)
+      ),
+    mod_obj$data_transformed$monthly %>%
+      dplyr::ungroup() %>%
+      dplyr::select(sales_div_tiv_trans)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      !!rlang::sym(ts),
+      !!rlang::sym(cs),
+      !!rlang::sym(kpi),
+      !!rlang::sym(dpnd_var)
+    ) %>%
+    dplyr::mutate(conv = !!rlang::sym(kpi) / !!rlang::sym(dpnd_var))
 
   if (!str_detect(dpnd_var, "sales")) {
     stop("Please include regular sales data(not meansby) in model data. ")
@@ -51,18 +72,26 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
 
   # Populating model data DF including intercept
   mod_data_wide <- mod_data %>%
-    mutate(Intercept = 1) %>%
-    ungroup() %>%
-    select(!!sym(ts), !!sym(cs), one_of(c(dpnd_var, indp_var))) %>%
-    pivot_longer(one_of(c(dpnd_var, indp_var)), names_to = "var", values_to = "value") %>%
-    mutate(var = str_c(!!sym(cs), var, sep = "_")) %>%
-    select(-!!sym(cs)) %>%
-    pivot_wider(names_from = var, values_from = value)
+    dplyr::mutate(Intercept = 1) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      !!rlang::sym(ts),
+      !!rlang::sym(cs),
+      tidyselect::one_of(c(dpnd_var, indp_var))
+    ) %>%
+    tidyr::pivot_longer(
+      tidyselect::one_of(c(dpnd_var, indp_var)),
+      names_to = "var",
+      values_to = "value"
+    ) %>%
+    dplyr::mutate(var = str_c(!!rlang::sym(cs), var, sep = "_")) %>%
+    dplyr::select(-!!rlang::sym(cs)) %>%
+    tidyr::pivot_wider(names_from = var, values_from = value)
 
 
   ## Preparing dataset for dependent & indenpendent variable
-  dpnd_var_decomp <- mod_data_wide %>% select(!!sym(ts), ends_with(dpnd_var))
-  indp_var_decomp <- mod_data_wide %>% select(-ends_with(dpnd_var))
+  dpnd_var_decomp <- mod_data_wide %>% dplyr::select(!!rlang::sym(ts), tidyselect::ends_with(dpnd_var))
+  indp_var_decomp <- mod_data_wide %>% dplyr::select(-tidyselect::ends_with(dpnd_var))
 
 
   if (length(indp_var) <= 0) {
@@ -70,36 +99,29 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
   }
   if (mod_form == "LIN_LIN") {
     indp_var_list <- indp_var_decomp %>%
-      select(-!!sym(ts)) %>%
+      dplyr::select(-!!rlang::sym(ts)) %>%
       as.list()
 
     var_name_list <- mod_coef %>%
-      select(!!sym(cs), Variables) %>%
-      unite("Variables", !!sym(cs), Variables, sep = "_") %>%
-      pull(Variables)
+      dplyr::select(!!rlang::sym(cs), Variables) %>%
+      tidyr::unite("Variables", !!rlang::sym(cs), Variables, sep = "_") %>%
+      dplyr::pull(Variables)
 
-    ind_decomp <- bind_cols(
-      imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, var_name_list)]) %>%
-        as_tibble(),
-      indp_var_decomp %>% select(!!sym(ts))
+    ind_decomp <- dplyr::bind_cols(
+      purrr::imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, var_name_list)]) %>%
+        tibble::as_tibble(),
+      indp_var_decomp %>% dplyr::select(!!rlang::sym(ts))
     )
 
 
-    # ind_decomp <- bind_cols(
-    #   imap(indp_var_list, ~ .x * mod_coef$Estimate[str_detect(.y, mod_coef$Variables)]) %>%
-    #     as_tibble(),
-    #   indp_var_decomp %>% select(!!sym(ts))
-    # )
-
-
-    decomp <- bind_rows(dpnd_var_decomp %>% pivot_longer(-!!sym(ts), names_to = "var", values_to = "value"), ind_decomp %>%
-      pivot_longer(-!!sym(ts), names_to = "var", values_to = "value")) %>%
-      separate(var, c(cs, "var"), extra = "merge") %>%
-      group_by(!!sym(ts), !!sym(cs), var) %>%
-      summarise(value = sum(value, na.rm = TRUE)) %>%
-      pivot_wider(names_from = var, values_from = value) %>%
-      select(!!sym(ts), !!sym(cs), dpnd_var, everything()) %>%
-      ungroup()
+    decomp <- dplyr::bind_rows(dpnd_var_decomp %>% tidyr::pivot_longer(-!!rlang::sym(ts), names_to = "var", values_to = "value"), ind_decomp %>%
+      tidyr::pivot_longer(-!!rlang::sym(ts), names_to = "var", values_to = "value")) %>%
+      tidyr::separate(var, c(cs, "var"), extra = "merge") %>%
+      dplyr::group_by(!!rlang::sym(ts), !!rlang::sym(cs), var) %>%
+      dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
+      tidyr::pivot_wider(names_from = var, values_from = value) %>%
+      dplyr::select(!!rlang::sym(ts), !!rlang::sym(cs), dpnd_var, tidyselect::everything()) %>%
+      dplyr::ungroup()
   }
   else if (mod_form == "LOG_LOG") {
     stop("Sorry, haven't implemented yet.")
@@ -129,24 +151,23 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
 
   ## transforming marketshare to unit sales by imposing the 'conversion' from transformed sales to regular sales
   decomp_prep <- decomp %>%
-    ungroup() %>%
-    left_join(conversion %>% ungroup() %>% select(!!sym(ts), !!sym(cs), conv)) %>%
-    select_all(toupper) %>%
-    select(!!sym(toupper(ts)), !!sym(toupper(cs)), CONV, everything(), -!!sym(toupper(dpnd_var))) %>%
-    gather("var", "value", 4:ncol(.)) %>%
-    mutate(value = CONV * value) %>%
-    group_by(!!sym(toupper(ts)), !!sym(toupper(cs)), var) %>%
-    summarise(value = sum(value, na.rm = TRUE)) %>%
-    spread(var, value) %>%
-    select(!!sym(toupper(ts)), !!sym(toupper(cs)), C, everything())
+    dplyr::ungroup() %>%
+    dplyr::left_join(conversion %>% dplyr::ungroup() %>% dplyr::select(!!rlang::sym(ts), !!rlang::sym(cs), conv)) %>%
+    dplyr::select_all(toupper) %>%
+    dplyr::select(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs)), CONV, tidyselect::everything(), -!!rlang::sym(toupper(dpnd_var))) %>%
+    tidyr::gather("var", "value", 4:ncol(.)) %>%
+    dplyr::mutate(value = CONV * value) %>%
+    dplyr::group_by(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs)), var) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
+    tidyr::spread(var, value) %>%
+    dplyr::select(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs)), C, tidyselect::everything())
 
   ## Calling in categorization to apply grouping of variables
 
-  #  decomp_prep[, toupper(dpnd_var)] <- pull(decomp, dpnd_var)
-  categorization <- spec %>% select(Trans_Variable, AggregateVariable)
+  categorization <- spec %>% dplyr::select(Trans_Variable, AggregateVariable)
   categorization <- categorization %>%
-    arrange(Trans_Variable) %>%
-    mutate(
+    dplyr::arrange(Trans_Variable) %>%
+    dplyr::mutate(
       Trans_Variable = str_trim(stringi::stri_trans_toupper(Trans_Variable, locale = "")),
       AggregateVariable = str_trim(stringi::stri_trans_toupper(AggregateVariable, locale = ""))
     )
@@ -195,53 +216,53 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
 
   ## preparing decomp conv to contribution by first taking the fitted value
   tot <- decomp_prep %>%
-    select(!!sym(toupper(ts)), !!sym(toupper(cs)), everything()) %>%
-    gather("variable", "value", 3:ncol(.)) %>%
-    group_by(!!sym(toupper(ts)), !!sym(toupper(cs))) %>%
-    summarise(value = sum(value)) %>%
-    rename(tot = value)
+    dplyr::select(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs)), tidyselect::everything()) %>%
+    tidyr::gather("variable", "value", 3:ncol(.)) %>%
+    dplyr::group_by(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs))) %>%
+    dplyr::summarise(value = sum(value)) %>%
+    dplyr::rename(tot = value)
 
-  ## Dividing the fitted value to turn everything to % contribution & multiplying by KPI to get to unit contributions
+  ## Dividing the fitted value to turn tidyselect::everything to % contribution & multiplying by KPI to get to unit contributions
   decomp_conv <- decomp_prep %>%
-    select(!!sym(toupper(ts)), !!sym(toupper(cs)), everything()) %>%
-    gather("variable", "value", 3:ncol(.)) %>%
-    left_join(tot) %>%
-    left_join(kpi_data %>% rename_all(toupper)) %>%
-    mutate(pct = value / tot, converted = pct * !!sym(toupper(kpi))) %>%
-    select(-value, -tot) %>%
-    rename(value = converted)
+    dplyr::select(!!rlang::sym(toupper(ts)), !!rlang::sym(toupper(cs)), tidyselect::everything()) %>%
+    tidyr::gather("variable", "value", 3:ncol(.)) %>%
+    dplyr::left_join(tot) %>%
+    dplyr::left_join(kpi_data %>% dplyr::rename_all(toupper)) %>%
+    dplyr::mutate(pct = value / tot, converted = pct * !!rlang::sym(toupper(kpi))) %>%
+    dplyr::select(-value, -tot) %>%
+    dplyr::rename(value = converted)
 
   # Contributions table - by region & month
   contribution_return <- decomp_conv %>%
-    mutate(FY = if_else(month(!!sym(toupper(ts))) > 3, year(!!sym(toupper(ts))), year(!!sym(toupper(ts))) - 1)) %>%
-    left_join(var_cat_tbl) %>%
-    select(!!sym(toupper(cs)), !!sym(toupper(ts)), FY, variable, Categories, value) %>%
-    group_by(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), Categories) %>%
-    summarise(value = sum(value, na.rm = TRUE)) %>%
+    dplyr::mutate(FY = dplyr::if_else(month(!!rlang::sym(toupper(ts))) > 3, year(!!rlang::sym(toupper(ts))), year(!!rlang::sym(toupper(ts))) - 1)) %>%
+    dplyr::left_join(var_cat_tbl) %>%
+    dplyr::select(!!rlang::sym(toupper(cs)), !!rlang::sym(toupper(ts)), FY, variable, Categories, value) %>%
+    dplyr::group_by(!!rlang::sym(toupper(cs)), FY, !!rlang::sym(toupper(ts)), Categories) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
     reshape2::dcast(paste(toupper(cs), " + ", toupper(ts), " + ", "FY ~ Categories"), fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "value") %>%
-    left_join(kpi_data %>% rename_all(toupper)) %>%
-    select(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), !!sym(toupper(kpi)), everything()) %>%
-    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!sym(toupper(NMP)) := toupper(kpi))
+    dplyr::left_join(kpi_data %>% dplyr::rename_all(toupper)) %>%
+    dplyr::select(!!rlang::sym(toupper(cs)), FY, !!rlang::sym(toupper(ts)), !!rlang::sym(toupper(kpi)), tidyselect::everything()) %>%
+    dplyr::rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!rlang::sym(toupper(NMP)) := toupper(kpi))
 
   # Contributions pct table - by region & month
   contribution2_return <- decomp_conv %>%
-    mutate(FY = if_else(month(!!sym(toupper(ts))) > 3, year(!!sym(toupper(ts))), year(!!sym(toupper(ts))) - 1)) %>%
-    left_join(var_cat_tbl) %>%
-    select(!!sym(toupper(cs)), !!sym(toupper(ts)), FY, variable, Categories, pct) %>%
-    group_by(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), Categories) %>%
-    summarise(pct = sum(pct, na.rm = TRUE)) %>%
+    dplyr::mutate(FY = dplyr::if_else(month(!!rlang::sym(toupper(ts))) > 3, year(!!rlang::sym(toupper(ts))), year(!!rlang::sym(toupper(ts))) - 1)) %>%
+    dplyr::left_join(var_cat_tbl) %>%
+    dplyr::select(!!rlang::sym(toupper(cs)), !!rlang::sym(toupper(ts)), FY, variable, Categories, pct) %>%
+    dplyr::group_by(!!rlang::sym(toupper(cs)), FY, !!rlang::sym(toupper(ts)), Categories) %>%
+    dplyr::summarise(pct = sum(pct, na.rm = TRUE)) %>%
     reshape2::dcast(paste(toupper(cs), " + ", toupper(ts), " + ", "FY ~ Categories"), fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "pct") %>%
-    left_join(kpi_data %>% rename_all(toupper)) %>%
-    select(!!sym(toupper(cs)), FY, !!sym(toupper(ts)), !!sym(toupper(kpi)), everything()) %>%
-    rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!sym(toupper(NMP)) := toupper(kpi))
+    dplyr::left_join(kpi_data %>% dplyr::rename_all(toupper)) %>%
+    dplyr::select(!!rlang::sym(toupper(cs)), FY, !!rlang::sym(toupper(ts)), !!rlang::sym(toupper(kpi)), tidyselect::everything()) %>%
+    dplyr::rename(Group = (toupper(cs)), FiscalYear = FY, Date = (toupper(ts)), !!rlang::sym(toupper(NMP)) := toupper(kpi))
 
   # Regular summary table
   summary_return <- contribution_return %>%
-    gather("variable", "value", 4:ncol(.)) %>%
-    group_by(Group, FiscalYear, variable) %>%
-    summarise(value = sum(value)) %>%
+    tidyr::gather("variable", "value", 4:ncol(.)) %>%
+    dplyr::group_by(Group, FiscalYear, variable) %>%
+    dplyr::summarise(value = sum(value)) %>%
     reshape2::dcast(Group + FiscalYear ~ variable, fun.aggregate = function(x) sum(x, na.rm = TRUE), value.var = "value") %>%
-    select(Group, FiscalYear, !!sym(NMP), BASE, everything())
+    dplyr::select(Group, FiscalYear, !!rlang::sym(NMP), BASE, tidyselect::everything())
 
   # PCT summary table
   summary2_return <- summary_return
@@ -249,13 +270,13 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
 
   # decomp_national
   decomp_national <- contribution_return %>%
-    gather("var", "value", 4:ncol(.)) %>%
-    group_by(FiscalYear, var) %>%
-    summarise(value = sum(value)) %>%
+    tidyr::gather("var", "value", 4:ncol(.)) %>%
+    dplyr::group_by(FiscalYear, var) %>%
+    dplyr::summarise(value = sum(value)) %>%
     dcast(var ~ FiscalYear, fun.aggregate = function(x) {
       sum(x, na.rm = TRUE)
     }, value.var = "value") %>%
-    rename(Categories = var)
+    dplyr::rename(Categories = var)
 
 
   decomp_national <- rbind(decomp_national[decomp_national$Categories == NMP, ], decomp_national[decomp_national$Categories != NMP, ])
@@ -263,27 +284,27 @@ Decomp <- function(mod_obj, NMP, min_ref = NULL, max_ref = NULL, mean_ref = NULL
   # Variable Categorization Table
   variableTbl <- var_cat_tbl
 
-  var_cat_tbl_national <- var_cat_tbl %>% left_join(decomp_national)
+  var_cat_tbl_national <- var_cat_tbl %>% dplyr::left_join(decomp_national)
 
   # VarCont Table
   varCont <- decomp_prep %>%
-    left_join(kpi_data %>% rename_all(toupper)) %>%
-    gather("variable", "value", 3:ncol(.)) %>%
-    left_join(var_cat_tbl %>% select(variable, Categories)) %>%
-    group_by(!!sym(toupper(cs)), !!sym(toupper(ts)), variable, Categories) %>%
-    summarise(value = sum(value, na.rm = TRUE)) %>%
-    mutate(Categories = if_else(variable == toupper(kpi), NMP, Categories)) %>%
+    dplyr::left_join(kpi_data %>% dplyr::rename_all(toupper)) %>%
+    tidyr::gather("variable", "value", 3:ncol(.)) %>%
+    dplyr::left_join(var_cat_tbl %>% dplyr::select(variable, Categories)) %>%
+    dplyr::group_by(!!rlang::sym(toupper(cs)), !!rlang::sym(toupper(ts)), variable, Categories) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
+    dplyr::mutate(Categories = dplyr::if_else(variable == toupper(kpi), NMP, Categories)) %>%
     reshape2::dcast(paste("variable + Categories + ", toupper(cs), " ~ ", toupper(ts)), fun.aggregate = function(x) {
       sum(x,
         na.rm = TRUE
       )
     }, value.var = "value") %>%
-    mutate(Model = "Sales") %>%
-    select(
-      variable, Categories, Model, !!sym(toupper(cs)),
-      everything()
+    dplyr::mutate(Model = "Sales") %>%
+    dplyr::select(
+      variable, Categories, Model, !!rlang::sym(toupper(cs)),
+      tidyselect::everything()
     ) %>%
-    dplyr::rename(Group = !!sym(toupper(cs)))
+    dplyr::rename(Group = !!rlang::sym(toupper(cs)))
 
   # Popluating list of tables that need to be referenced for unnesting
 

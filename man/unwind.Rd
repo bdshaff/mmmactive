@@ -13,6 +13,19 @@ unwind(
   demo = FALSE
 )
 }
+\arguments{
+\item{model1}{- model1}
+
+\item{model2}{- model2}
+
+\item{use_model2_panel}{- use_model2_panel}
+
+\item{print_summary}{- print_summary}
+
+\item{expandPeriodToLongest}{- logical}
+
+\item{deom}{- logical}
+}
 \description{
 unwind
 }

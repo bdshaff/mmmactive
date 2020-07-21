@@ -1,5 +1,7 @@
 #' Test activated mod_obj
 #'
+#' @param x - mod_obj
+#'
 #' @export
 
 is.activated <- function(x) {

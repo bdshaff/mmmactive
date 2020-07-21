@@ -6,6 +6,9 @@
 \usage{
 is.load_data_ready(mod_obj)
 }
+\arguments{
+\item{x}{- mod_obj}
+}
 \description{
 Test load_data_ready mod_obj
 }

@@ -14,7 +14,17 @@ TransformTemp(
 )
 }
 \arguments{
-\item{print}{}
+\item{data_tmp}{- weekly or monthly input data}
+
+\item{spec_tmp}{- spec}
+
+\item{tmp}{- time agg level}
+
+\item{fit_curves}{- fit curves}
+
+\item{cross_section}{- cross_section level}
+
+\item{print}{- logical}
 }
 \value{
 data.frame

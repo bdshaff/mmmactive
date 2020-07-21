@@ -1,5 +1,7 @@
 #' Test load_data_ready mod_obj
 #'
+#' @param x - mod_obj
+#'
 #' @export
 
 is.load_data_ready <- function(mod_obj){

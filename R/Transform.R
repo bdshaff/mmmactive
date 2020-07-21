@@ -22,7 +22,7 @@ Transform <- function(mod_obj, print = TRUE) {
   data_input <- mod_obj$data_input
   spec <- mod_obj$spec
   fit_curves <- mod_obj$fit_curves
-  spec_trans <- spec %>% filter(Transform == "Y")
+  spec_trans <- spec %>% dplyr::filter(Transform == "Y")
   cross_section <- mod_obj$cs
   trans_variable <- mod_obj$spec$Trans_Variable
   kpi <- mod_obj$kpi
@@ -44,7 +44,7 @@ Transform <- function(mod_obj, print = TRUE) {
       names(DFFS) <- spec_trans$Trans_Variable
 
       mod_obj$data_transformed <- list(data.frame(DFFS))
-      mod_obj$data <- bind_cols(data_input, data.frame(DFFS))
+      mod_obj$data <- dplyr::bind_cols(data_input, data.frame(DFFS))
       return(mod_obj)
     }
   } else {
@@ -54,17 +54,17 @@ Transform <- function(mod_obj, print = TRUE) {
 
     if ("data.frame" %in% class(data_input)) {
       DFsplit <- data_input %>%
-        group_by(!!sym(cross_section)) %>%
-        group_split()
+        dplyr::group_by(!!rlang::sym(cross_section)) %>%
+        dplyr::group_split()
 
       DFFS <- purrr::map(DFsplit, ~ TransformSplit(.x,
         spec_split = spec_tmp,
         fit_curves = fit_curves,
         print = print
-      )) %>% bind_rows()
+      )) %>% dplyr::bind_rows()
 
       mod_obj$data_transformed <- DFFS
-      mod_obj$data <- data_input %>% bind_cols(DFFS)
+      mod_obj$data <- data_input %>% dplyr::bind_cols(DFFS)
       return(mod_obj)
     } else if (class(data_input) == "list") {
       DFFS <- purrr::map(names(data_input), ~ TransformTemp(
@@ -74,7 +74,7 @@ Transform <- function(mod_obj, print = TRUE) {
         fit_curves = fit_curves,
         cross_section = cross_section,
         print = print
-      )) %>% set_names(names(data_input))
+      )) %>% purrr::set_names(names(data_input))
 
       mod_obj$data_transformed <- DFFS
       mod_obj$data <- TransformTempJoin(data_input, DFFS, trans_variable)
@@ -82,13 +82,13 @@ Transform <- function(mod_obj, print = TRUE) {
       if(kpi == "sales"){
         mod_obj$data =
           mod_obj$data %>%
-          group_by(!!sym(cross_section)) %>%
-          mutate(!!DepVar := !!sym(DepVar)/mean(!!sym(DepVar), na.rm = TRUE))
+          dplyr::group_by(!!rlang::sym(cross_section)) %>%
+          dplyr::mutate(!!DepVar := !!rlang::sym(DepVar)/mean(!!rlang::sym(DepVar), na.rm = TRUE))
 
         mod_obj$data_transformed$monthly =
           mod_obj$data_transformed$monthly %>%
-          group_by(!!sym(cross_section)) %>%
-          mutate(!!DepVar := !!sym(DepVar)/mean(!!sym(DepVar), na.rm = TRUE))
+          dplyr::group_by(!!rlang::sym(cross_section)) %>%
+          dplyr::mutate(!!DepVar := !!rlang::sym(DepVar)/mean(!!rlang::sym(DepVar), na.rm = TRUE))
       }
 
       return(mod_obj)

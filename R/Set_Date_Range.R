@@ -4,6 +4,7 @@
 #' Uses the BeginData and EndDate attributes of the mod_obj to set the range on the transformed data.
 #'
 #' @param mod_obj - model object
+#' @param na.rm - logical
 #'
 #' @return mod_obj
 #' @export

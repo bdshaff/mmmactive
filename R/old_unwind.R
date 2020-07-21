@@ -1,5 +1,12 @@
 #' unwind
 #'
+#' @param model1 - model1
+#' @param model2 - model2
+#' @param  use_model2_panel - use_model2_panel
+#' @param print_summary - print_summary
+#' @param expandPeriodToLongest - logical
+#' @param deom - logical
+#'
 #'@export
 #'
 

@@ -15,6 +15,6 @@ activate_model_spec <- function(mod_obj, input_file_ModelSpec) {
     stop("Input must be of class mod_obj.")
   }
 
-  mod_obj$spec <- readr::read_csv(input_file_ModelSpec, col_types = cols()) %>% dplyr::filter(Include == 1)
+  mod_obj$spec <- readr::read_csv(input_file_ModelSpec, col_types = readr::cols()) %>% dplyr::filter(Include == 1)
   return(mod_obj)
 }

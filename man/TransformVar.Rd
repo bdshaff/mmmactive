@@ -12,7 +12,13 @@ TransformVar(
 )
 }
 \arguments{
-\item{print}{}
+\item{data_vector}{- vector}
+
+\item{spec_row}{- row from spec table}
+
+\item{fit_curves}{- fit curves}
+
+\item{print}{- logical}
 }
 \value{
 vector - transformed data_vector

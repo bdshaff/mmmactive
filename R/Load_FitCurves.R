@@ -6,6 +6,8 @@
 #' @param input_file_ModelFitCurves - file path
 #'
 #' @return mod_obj
+#'
+#' @importFrom janitor clean_names
 #' @export
 
 Load_FitCurves <- function(mod_obj, input_file_ModelFitCurves) {

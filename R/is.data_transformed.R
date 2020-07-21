@@ -1,5 +1,7 @@
 #' Test data_transformed mod_obj
 #'
+#' @param x - mod_obj
+#'
 #' @export
 
 is.data_transformed <- function(mod_obj){
