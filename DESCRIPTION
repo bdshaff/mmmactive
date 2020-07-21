@@ -26,7 +26,8 @@ Imports:
     lubridate, 
     readxl, 
     magrittr,
-    car
+    car,
+    RcppRoll
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,
