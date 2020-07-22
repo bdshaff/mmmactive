@@ -7,11 +7,15 @@
 \description{
 This package implement a set of functions for MMM projects following the MSMP (Marketing Science Modeling Platform) framework.
 These functions are designed around a data structure of class `mod_obj` which is generally the first argument. The core functions of the
-package are names after a key step of an MMM workflow.
+package are named after a key step of an MMM workflow.
+}
+\details{
+Getting familiar with the `mod_obj` : vignette("mod_obj_class_vignette", "mmmactive")
+
 \enumerate{
-      \item \code{Load_Data}
-      \item \code{Transform}
-      \item \code{Run_Model_Panel}
+      \item \code{Load_Data} : vignette("LoadingData_vignette", "mmmactive")
+      \item \code{Transform} : vignette("Transform_vignette", "mmmactive")
+      \item \code{Run_Model_Panel} : vignette("Modeling_vignette", "mmmactive")
       \item \code{Decomp + Unnest}
       \item \code{Response}
       \item \code{Media Mix Optimization}

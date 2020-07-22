@@ -4,7 +4,7 @@
 \alias{is.load_data_ready}
 \title{Test load_data_ready mod_obj}
 \usage{
-is.load_data_ready(mod_obj)
+is.load_data_ready(x)
 }
 \arguments{
 \item{x}{- mod_obj}

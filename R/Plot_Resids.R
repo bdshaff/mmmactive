@@ -6,6 +6,8 @@
 #' @param panel_name  - panel name
 #'
 #' @return mod_obj
+#'
+#' @import ggplot2
 #' @export
 
 Plot_Resids <- function(mod_obj, panel_name) {

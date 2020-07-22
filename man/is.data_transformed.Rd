@@ -4,7 +4,7 @@
 \alias{is.data_transformed}
 \title{Test data_transformed mod_obj}
 \usage{
-is.data_transformed(mod_obj)
+is.data_transformed(x)
 }
 \arguments{
 \item{x}{- mod_obj}

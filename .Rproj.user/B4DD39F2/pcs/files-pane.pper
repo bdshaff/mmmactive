@@ -1,9 +1,13 @@
 {
-    "path": "~/Documents/mmm_create_proj/mmmactive/R",
+    "path": "~/Documents/mmm_create_proj/mmmactive",
     "sortOrder": [
         {
             "columnIndex": 2,
-            "ascending": false
+            "ascending": true
+        },
+        {
+            "columnIndex": 3,
+            "ascending": true
         }
     ]
 }

@@ -130,7 +130,7 @@ Reach <- function(fa, fb, fc, fGRPs) {
 }
 
 AdStockPD <- function(data, i, p) {
-  rowSums(as.data.frame(embed(c(rep(NA, p), data), p + 1) %*% ((1 - i)^seq(0, p, 1))), na.rm = F) -> output
+  rowSums(as.data.frame(stats::embed(c(rep(NA, p), data), p + 1) %*% ((1 - i)^seq(0, p, 1))), na.rm = F) -> output
   output[is.na(output)] <- 0
   return(output)
 }
@@ -175,7 +175,7 @@ adstockv3 <- function(afGRPs, fdecayRate, peak = 1, length = 600) {
       tmp2[i] <- 0
       tmp <- tmp1 - tmp2
 
-      tmp3 <- lag(tmp, (peak - 1), default = 0)
+      tmp3 <- stats::lag(tmp, (peak - 1), default = 0)
 
       res <- Reduce(function(v, x) v * (1 - fdecayRate) + x, x = tmp3, accumulate = TRUE)
 

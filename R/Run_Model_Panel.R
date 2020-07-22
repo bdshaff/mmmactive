@@ -62,17 +62,17 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
 
   eq <- paste(eq, " -1")
   eq <- paste(DepVar, " ~ ", eq)
-  eq <- as.formula(eq)
+  eq <- stats::as.formula(eq)
 
   eq_lm <- paste(IV[!IV %in% "Intercept"], collapse = " + ")
   eq_lm <- paste(eq_lm, " + ", cs)
   eq_lm <- paste(DepVar, " ~ ", eq_lm)
-  eq_lm <- as.formula(eq_lm)
+  eq_lm <- stats::as.formula(eq_lm)
 
 
   print("calling my_bayes()...")
   bayes_mod_obj_inter <- my_bayes(formula = eq, data = x)
-  mod_matrix <- model.matrix(eq, x)
+  mod_matrix <- stats::model.matrix(eq, x)
 
 
   b <- bayes_mod_obj_inter$coefficients
@@ -133,7 +133,7 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
 
   a <- priors
   a$Variables <- factor(a$Variables, levels = order_of_var)
-  a <- arrange(a, Variables)
+  a <- dplyr::arrange(a, Variables)
   a$Variables <- as.character(a$Variables)
   priors <- a
 
@@ -142,7 +142,7 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
   varyby <- unique(mod_obj$spec$VaryBy)[unique(mod_obj$spec$VaryBy) != "None"]
   if (length(varyby) > 0) {
     b <- bayes_mod_obj$coefficients %>%
-      separate(Variables, into = c(varyby, "Variables"), sep = "\\.", fill = "left")
+      tidyr::separate(Variables, into = c(varyby, "Variables"), sep = "\\.", fill = "left")
     b[[varyby]] <- gsub(varyby, "", b[[varyby]])
 
     tmp <- data.frame(varyby = unique(mod_obj$data[[varyby]]))
@@ -156,7 +156,7 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
 
     full_b$Variables <- as.character(full_b$Variables)
     full_b[[varyby]] <- as.character(full_b[[varyby]])
-    full_b <- left_join(full_b, b)
+    full_b <- dplyr::left_join(full_b, b)
     v <- unique(full_b$Variables[is.na(full_b$Estimate)])
     if (length(v) > 0) {
       for (j in 1:length(v)) {
@@ -177,7 +177,7 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
     full_b$Variables <- as.character(full_b$Variables)
     names(full_b)[1] <- varyby
 
-    full_b <- left_join(full_b, bayes_mod_obj$coefficients)
+    full_b <- dplyr::left_join(full_b, bayes_mod_obj$coefficients)
   }
   bayes_mod_obj$coefficients <- full_b
   mod_obj$Model <- bayes_mod_obj
@@ -189,28 +189,28 @@ Run_Model_Panel <- function(mod_obj, Method = "Bayes") {
     time <- rlang::sym(mod_obj$Time)
     dv <- rlang::sym(DepVar)
     cs <- rlang::sym(mod_obj$CS)
-    cs <- as.formula(cs ~ .)
+    cs <- stats::as.formula(cs ~ .)
 
 
     mod_obj$Model$plt_act_pred <-
-      ggplot(mod_obj$Model$act_pred, aes(x = time)) +
-      geom_point(aes(y = dv, colour = "actual")) +
-      geom_line(aes(y = predicted, colour = "predicted")) +
-      facet_wrap(cs, scales = "free", ncol = 2)
+      ggplot2::ggplot(mod_obj$Model$act_pred, aes(x = time)) +
+      ggplot2::geom_point(aes(y = dv, colour = "actual")) +
+      ggplot2::geom_line(aes(y = predicted, colour = "predicted")) +
+      ggplot2::facet_wrap(cs, scales = "free", ncol = 2)
   }
 
 
   mod_obj$Model_interLM <- bayes_mod_obj_inter
-  mod_obj$lmModel <- lm(eq_lm, data = x)
+  mod_obj$lmModel <- stats::lm(eq_lm, data = x)
 
-  mod_obj$Model$VIF <- data.frame(vif(mod_obj$lmModel))
+  mod_obj$Model$VIF <- data.frame(car::vif(mod_obj$lmModel))
   mod_obj$Model$VIF <- tibble::rownames_to_column(mod_obj$Model$VIF, var = "Variables")
-  mod_obj$Model$result_all <- full_join(mod_obj$Model$VIF, mod_obj$Model$coefficients)
+  mod_obj$Model$result_all <- dplyr::full_join(mod_obj$Model$VIF, mod_obj$Model$coefficients)
   mod_obj$Model$result_all <- mod_obj$Model$result_all[, c("Variables", "GVIF", "Estimate", "Error", "Tvalue")]
   names(mod_obj$Model$result_all)[names(mod_obj$Model$result_all) == "Variables"] <- "Trans_Variable"
-  mod_obj$Model$result_all <- full_join(spec, mod_obj$Model$result_all)
+  mod_obj$Model$result_all <- dplyr::full_join(spec, mod_obj$Model$result_all)
 
-  mod_obj$Model$DW <- durbinWatsonTest(mod_obj$lmModel)
+  mod_obj$Model$DW <- car::durbinWatsonTest(mod_obj$lmModel)
   mod_obj$Model$result_all$R2 <- rep(mod_obj$Model$R2, nrow(mod_obj$Model$result_all))
   mod_obj$Model$result_all$DW <- rep(mod_obj$Model$DW$dw, nrow(mod_obj$Model$result_all))
   return(mod_obj)

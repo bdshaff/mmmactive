@@ -5,9 +5,9 @@
 #' @param  use_model2_panel - use_model2_panel
 #' @param print_summary - print_summary
 #' @param expandPeriodToLongest - logical
-#' @param deom - logical
+#' @param demo - logical
 #'
-#'@export
+#' @export
 #'
 
 unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRUE,
@@ -74,7 +74,7 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
         }
       }
       else {
-        new_sub_m <- new_sub_m[complete.cases(new_sub_m), ]
+        new_sub_m <- new_sub_m[stats::complete.cases(new_sub_m), ]
         main_m <- main_m[main_m$Date %in% new_sub_m$Date, ]
       }
       sub_m <- new_sub_m
@@ -123,7 +123,7 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
         model1$variableTbl,
         model2$variableTbl
       ))
-      var_cat_tbl <- var_cat_tbl %>% filter(Categories !=
+      var_cat_tbl <- var_cat_tbl %>% dplyr::filter(Categories !=
                                               "FY")
       var_order <- base::unique(var_cat_tbl$Categories)
       var_order <- var_order[!stringr::str_detect(
@@ -184,7 +184,7 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
   if (base::length(main_m_groups) != 1) {
     tmp <- summary_return[, -1] %>%
       dplyr::group_by(agg_period) %>%
-      dplyr::summarise_each(funs(sum)) %>%
+      dplyr::summarise_each(dplyr::funs(sum)) %>%
       base::cbind(
         Group = "TOTAL",
         .
@@ -201,7 +201,7 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
   modname2 <- base::names(model2$contributionsTbl)[4]
   modname1 <- base::names(model1$contributionsTbl)[4]
   if (length(model1) != 6 & demo == FALSE) {
-    i_c <- incremental_contributions(
+    i_c <- decompR::incremental_contributions(
       model1, contribution_return,
       modname2
     )
@@ -213,8 +213,8 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
     i_c$Date <- base::as.Date(i_c$Date)
   }
   else {
-    i_c1 <- incremental_contributions(NULL, model1, modname1)
-    i_c2 <- incremental_contributions(
+    i_c1 <- decompR::incremental_contributions(NULL, model1, modname1)
+    i_c2 <- decompR::incremental_contributions(
       model1, contribution_return,
       modname2
     )
@@ -276,7 +276,7 @@ unwind <- function(model1, model2, use_model2_panel = "ALL", print_summary = TRU
     model2pct[[colyer]] <- model2pct[[colyer]] * picolyear
   }
 
-  var_tblPG <- rbind(as.data.frame(model1$varCont), model2pct[complete.cases(model2pct), ])
+  var_tblPG <- rbind(as.data.frame(model1$varCont), model2pct[stats::complete.cases(model2pct), ])
   return(list(
     contributionsTbl = contribution_return, summary = summary_return,
     variableTbl = var_cat_tbl, incrementalContributionsTbl = i_c,

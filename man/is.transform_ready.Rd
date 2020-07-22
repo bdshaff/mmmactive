@@ -4,7 +4,10 @@
 \alias{is.transform_ready}
 \title{Test transform_ready mod_obj}
 \usage{
-is.transform_ready(mod_obj)
+is.transform_ready(x)
+}
+\arguments{
+\item{x}{- mod_obj}
 }
 \description{
 Test transform_ready mod_obj

@@ -1,5 +1,7 @@
 #' act_pred
 #'
+#' @param obj - mod_obj
+#'
 #' @export
 
 
@@ -14,16 +16,16 @@
 # input : obj - the model object that has coefficients and data
 # this function returns a dataframe that contains the acctual vs predicted
 #############################################################
-act_pred <- function( obj ) {
+act_pred <- function(obj) {
   spec <- obj$spec
   x = obj$data
   full_b <- obj$Model$coefficients
   full_b$Error <- NULL
   full_b$Tvalue <- NULL
   full_b$Variables <- paste0("beta_", full_b$Variables)
-  full_b <- spread(full_b, Variables, Estimate)
+  full_b <- tidyr::spread(full_b, Variables, Estimate)
 
-  x <- left_join(x, full_b)
+  x <- dplyr::left_join(x, full_b)
   x$predicted <- 0
 
   if ("Intercept" %in% (spec$Trans_Variable)) {

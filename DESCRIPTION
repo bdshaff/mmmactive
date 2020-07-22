@@ -21,14 +21,21 @@ Imports:
     readr, 
     purrr, 
     tibble, 
-    stringr, 
+    stringr,
+    stringdist,
+    stringi,
     forcats, 
     lubridate, 
     readxl, 
     magrittr,
+    rlang,
+    tidyselect,
     janitor,
+    plotly,
     car,
-    RcppRoll
+    RcppRoll,
+    decompR,
+    reshape2
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,

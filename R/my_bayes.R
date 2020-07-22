@@ -13,8 +13,8 @@ my_bayes <- function(formula, data, priors = NULL) {
 
   y <- data[[DepVar]]
 
-  formula <- as.formula(formula)
-  X <- model.matrix(formula, data = data)
+  formula <- stats::as.formula(formula)
+  X <- stats::model.matrix(formula, data = data)
   Xdf <- data.frame(X)
   IV <- names(Xdf)
 

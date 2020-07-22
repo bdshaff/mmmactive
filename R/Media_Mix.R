@@ -15,8 +15,8 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   ######### Need to generalize this path #########
   RC <- mod_obj$ABClist
   ABCs <- RC$ABCs[, -which(RC$ABCs[1, ] < 1)]
-  multiplier <- pull(filter(mod_obj$Mtable, FiscalPeriod == "FY18"), MSRP)
-  # multiplier <- pull(filter(mod_obj$Mtable, FiscalPeriod == FiscalPeriod), MSRP)
+  multiplier <- dplyr::pull(dplyr::filter(mod_obj$Mtable, FiscalPeriod == "FY18"), MSRP)
+  # multiplier <- dplyr::pull(dplyr::filter(mod_obj$Mtable, FiscalPeriod == FiscalPeriod), MSRP)
 
   # To avoid scientific notation
   options("scipen" = 100, "digits" = 4)
@@ -24,15 +24,15 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   df_orig <- ABCs %>%
     t() %>%
     as.data.frame() %>%
-    rownames_to_column("Channel") %>%
-    select(Channel, `Adjusted A`, B, C, Spend, mROI)
+    tibble::rownames_to_column("Channel") %>%
+    dplyr::select(Channel, `Adjusted A`, B, C, Spend, mROI)
 
   print("This is how the mROIs look with current Spend level")
   show(df_orig)
 
   df_opt <- df_orig %>%
-    select(Channel, `Adjusted A`, B, C) %>%
-    mutate(
+    dplyr::select(Channel, `Adjusted A`, B, C) %>%
+    dplyr::mutate(
       Min = 1000000,
       Max = 900000000
     )
@@ -47,7 +47,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   }
 
   df_opt <- df_opt %>%
-    mutate(
+    dplyr::mutate(
       Spend = Min,
       mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000
     )
@@ -69,7 +69,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
     }
 
     df_opt <- df_opt %>%
-      mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
+      dplyr::mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
 
     rem_budget <- total_budget - sum(df_opt$Spend)
   }
@@ -81,7 +81,7 @@ Media_Mix <- function(mod_obj, total_budget = NULL, incremental = 100000, intera
   # print(rem_budget)
 
   df_opt <- df_opt %>%
-    mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
+    dplyr::mutate(mROI = (mapply(Reach, `Adjusted A`, B, C, Spend + 10000) * multiplier - mapply(Reach, `Adjusted A`, B, C, Spend) * multiplier) / 10000)
 
   print("Done")
 

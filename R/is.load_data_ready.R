@@ -4,11 +4,11 @@
 #'
 #' @export
 
-is.load_data_ready <- function(mod_obj){
-  if(!is.activated(mod_obj)){
+is.load_data_ready <- function(x){
+  if(!is.activated(x)){
     warning("mod_obj must be activated to on-load data.\n")
   }
-  test = "data_group_selector" %in% attributes(mod_obj)$names
+  test = "data_group_selector" %in% attributes(x)$names
   if(!test){
     warning("must add group selector.\n")
   }

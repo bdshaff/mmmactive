@@ -4,7 +4,7 @@
 \alias{is.modeled}
 \title{Test modeled mod_obj}
 \usage{
-is.modeled(mod_obj)
+is.modeled(x)
 }
 \arguments{
 \item{x}{- mod_obj}

@@ -1,0 +1,123 @@
+---
+title: "Run Model"
+author: "Ben Denis Shaffer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Run Model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(mmmactive)
+
+nmp <- "ttn"
+rgn <- c("CR", "MAR", "MTN", "MWR", "NER", "NWR", "SER", "WR")
+
+input_file_ModelSetup =  here::here("data","ttn-ModelSetup.csv")
+input_file_ModelSpec = here::here("data","ttn-ModelSpec.csv")
+
+input_file_ModelData = here::here("data","ModelData.xlsx")
+input_file_FMIData = here::here("data","FMI.csv")
+input_file_MSRPData <- here::here("data","MSRPData.csv")
+input_file_SpendData <- here::here("data","SpendData.csv")
+input_FitCurves <- here::here("data","Fit_Curves.xlsx")
+
+input_files = list(
+  input_file_ModelData = input_file_ModelData,
+  input_file_FMIData = input_file_FMIData,
+  input_file_SpendData = input_file_SpendData,
+  input_file_MSRPData = input_file_MSRPData
+)
+
+
+mod_obj <- create_mod_obj()
+mod_obj <- activate_model_setup(mod_obj, input_file_ModelSetup)
+mod_obj <- activate_model_spec(mod_obj, input_file_ModelSpec)
+mod_obj <- add_group_selector(mod_obj, vehicles = nmp, regions = rgn)
+mod_obj <- Load_Data(mod_obj, input_files)
+mod_obj <- Load_FitCurves(mod_obj, input_FitCurves)
+mod_obj <- Transform(mod_obj, print = FALSE)
+
+is.data_transformed(mod_obj)
+```
+
+
+# Setting the Modeling Data Range
+
+```{r}
+mod_obj <- Set_Date_Range(mod_obj)
+```
+
+# Adding Dummy Variables
+
+```{r}
+
+Add_Dummy <- function(mod_obj) {
+  cs <- mod_obj$cs
+  ts <- mod_obj$Time
+
+  n_cols_before <- ncol(mod_obj$data)
+
+  mod_obj$data <-
+    dplyr::mutate(mod_obj$data,
+      DUM_2017_11_01 = dplyr::if_else(!!rlang::sym(ts) == "2017-11-01", 1, 0),
+      DUM_2018_01_01 = dplyr::if_else(!!rlang::sym(ts) == "2018-01-01", 1, 0),
+      DUM_2017_05_01 = dplyr::if_else(!!rlang::sym(ts) == "2017-05-01", 1, 0),
+      DUM_2018_03_01 = dplyr::if_else(!!rlang::sym(ts) == "2018-03-01", 1, 0),
+      DUM_2018_09_01 = dplyr::if_else(!!rlang::sym(ts) == "2018-09-01", 1, 0)
+    )
+
+  n_added_cols <- ncol(mod_obj$data) - n_cols_before
+  n_cols_after <- ncol(mod_obj$data)
+  added_dummy_cols <- names(mod_obj$data)[(n_cols_after - (n_added_cols - 1)):n_cols_after]
+
+  dummy_spec <- data.frame(added_dummy_cols, added_dummy_cols, "Base", "Dummy", 1, "None", 0, 1)
+  dummy_spec <- magrittr::set_colnames(dummy_spec , names(mod_obj$spec)[c(1:6, 17:18)])
+
+  mod_obj$spec <- dplyr::bind_rows(mod_obj$spec, dummy_spec)
+
+  return(mod_obj)
+}
+
+```
+
+
+```{r}
+mod_obj <- Add_Dummy(mod_obj)
+```
+
+
+# Model Fitting
+
+```{r}
+mod_obj <- Run_Model_Panel(mod_obj)
+```
+
+
+## Summary Tables
+
+```{r}
+mod_obj$Model$result_all
+```
+
+## Visualization
+
+### Residual Plot
+
+```{r fig.width=7, fig.height=7, warning=FALSE}
+Plot_Resids(mod_obj, panel_name = "all")
+```
+
+
+
+
+

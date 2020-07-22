@@ -22,9 +22,9 @@ Set_Date_Range <- function(mod_obj, na.rm = TRUE) {
 
   mod_obj$data <-
     mod_obj$data %>%
-    filter(
-      !!sym(mod_obj$Time) >= mod_obj$BeginDate,
-      !!sym(mod_obj$Time) <= mod_obj$EndDate
+    dplyr::filter(
+      !!rlang::sym(mod_obj$Time) >= mod_obj$BeginDate,
+      !!rlang::sym(mod_obj$Time) <= mod_obj$EndDate
     )
 
   if (na.rm) {

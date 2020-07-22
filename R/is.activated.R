@@ -9,9 +9,9 @@ is.activated <- function(x) {
     stop("Input must be of class mod_obj.")
   }
   nms <- c("ModelForm", "Panel", "Time", "BeginDate", "EndDate", "SimStart", "SimEnd", "mroi_step", "cs", "kpi", "spec")
-  test <- sum(nms %in% attributes(mod_obj)$names) == 11
+  test <- sum(nms %in% attributes(x)$names) == 11
   if(!test){
-    warning(paste(nms[!(nms %in% attributes(mod_obj)$names)],": missing element to activate mod_obj\n"), immediate. = TRUE)
+    warning(paste(nms[!(nms %in% attributes(x)$names)],": missing element to activate mod_obj\n"), immediate. = TRUE)
   }
   return(test)
 }

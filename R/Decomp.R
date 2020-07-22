@@ -273,7 +273,7 @@ Decomp <- function(mod_obj, min_ref = NULL, max_ref = NULL, mean_ref = NULL) {
     tidyr::gather("var", "value", 4:ncol(.)) %>%
     dplyr::group_by(FiscalYear, var) %>%
     dplyr::summarise(value = sum(value)) %>%
-    dcast(var ~ FiscalYear, fun.aggregate = function(x) {
+    reshape2::dcast(var ~ FiscalYear, fun.aggregate = function(x) {
       sum(x, na.rm = TRUE)
     }, value.var = "value") %>%
     dplyr::rename(Categories = var)

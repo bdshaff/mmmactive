@@ -53,7 +53,7 @@ TransformVar <- function(data_vector = NULL, spec_row = NULL, fit_curves = NULL,
       data_vector_transform <- adstockv3(data_vector_transform, spec$Decay[i], spec$Peak[i], spec$Length[i])
     }
     if (type[i] == "LAG") {
-      data_vector_transform <- lag(data_vector_transform, spec_row$Lag, default = 0)
+      data_vector_transform <- stats::lag(data_vector_transform, spec_row$Lag, default = 0)
     }
     if (type[i] == "LOG") {
       data_vector_transform <- log(data_vector_transform * spec_row$Scale + 1)

@@ -6,6 +6,9 @@
 \usage{
 act_pred(obj)
 }
+\arguments{
+\item{obj}{- mod_obj}
+}
 \description{
 act_pred
 }

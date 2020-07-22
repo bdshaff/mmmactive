@@ -126,13 +126,13 @@ data_vector_transformed =
 ```
 
 
-```{r}
+```{r fig.width=7, fig.height=7}
 plot(data_vector, data_vector_transformed)
 ```
 
 Here is an example of how `TransformVar` can be given any vector, here numbers from 1-200. We keep the same transformation instructions as in the above.
 
-```{r}
+```{r fig.width=7, fig.height=7}
 data_vector = 1:200
 transfromation_instruction = mod_obj$spec[mod_obj$spec$Orig_Variable == "tv_e_eeq_direct_t2",]
 

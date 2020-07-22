@@ -24,7 +24,7 @@ unwind(
 
 \item{expandPeriodToLongest}{- logical}
 
-\item{deom}{- logical}
+\item{demo}{- logical}
 }
 \description{
 unwind
