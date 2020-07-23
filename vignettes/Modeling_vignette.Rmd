@@ -117,7 +117,3 @@ mod_obj$Model$result_all
 Plot_Resids(mod_obj, panel_name = "all")
 ```
 
-
-
-
-

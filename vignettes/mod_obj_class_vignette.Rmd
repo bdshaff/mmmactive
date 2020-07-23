@@ -138,3 +138,4 @@ Describe the `spec` element
 ```{r}
 mod_obj$spec
 ```
+

@@ -60,17 +60,17 @@ Plot_Resids <- function(mod_obj, panel_name) {
     print(paste("View", panel_name, "panel resids"))
     DF <-
       x %>%
-      filter(!!sym(cs) == panel_name) %>%
-      select(!!sym(ts), KPI, fitted, resid) %>%
-      group_by(!!sym(ts)) %>%
-      summarise(
+      dplyr::filter(!!sym(cs) == panel_name) %>%
+      dplyr::select(!!sym(ts), KPI, fitted, resid) %>%
+      dplyr::group_by(!!sym(ts)) %>%
+      dplyr::summarise(
         KPI = sum(KPI, na.rm = TRUE),
         fitted = sum(fitted, na.rm = TRUE),
         resid = sum(resid, na.rm = TRUE)
       )
 
     plot1 <-
-      ungroup(DF) %>%
+      dplyr::ungroup(DF) %>%
       ggplot(aes(!!sym(ts))) +
       geom_line(aes(y = KPI, colour = "Total Sales")) +
       geom_line(aes(y = fitted, colour = "Fitted Total Sales")) +
@@ -88,16 +88,16 @@ Plot_Resids <- function(mod_obj, panel_name) {
     print("View all panel resids: panels aggregated")
     DF <-
       x %>%
-      select(!!sym(ts), KPI, fitted, resid) %>%
-      group_by(!!sym(ts)) %>%
-      summarise(
+      dplyr::select(!!sym(ts), KPI, fitted, resid) %>%
+      dplyr::group_by(!!sym(ts)) %>%
+      dplyr::summarise(
         KPI = sum(KPI, na.rm = TRUE),
         fitted = sum(fitted, na.rm = TRUE),
         resid = sum(resid, na.rm = TRUE)
       )
 
     plot1 <-
-      ungroup(DF) %>%
+      dplyr::ungroup(DF) %>%
       ggplot(aes(!!sym(ts))) +
       geom_line(aes(y = KPI, colour = "Total Sales")) +
       geom_line(aes(y = fitted, colour = "Fitted Total Sales")) +
