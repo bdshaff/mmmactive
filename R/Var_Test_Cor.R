@@ -6,6 +6,8 @@
 #' @param print - TRUE or FALSE
 #'
 #' @return data.frame
+#'
+#' @import dtplyr
 #' @export
 
 Var_Test_Cor <- function(mod_obj = NULL, print = NULL) {
@@ -121,13 +123,13 @@ Var_Test_Cor <- function(mod_obj = NULL, print = NULL) {
     dtplyr::lazy_dt()
 
   weeklyDF <- weeklyDF1 %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(month = lubridate::floor_date(week, unit = "month")) %>%
-    dplyr::select(-week) %>%
-    dplyr::filter(month >= mod_obj$BeginDate & month <= mod_obj$EndDate) %>%
-    dplyr::group_by(vehicle, region, month) %>%
-    dplyr::summarise_all(.funs = function(x) mean(x, na.rm = TRUE)) %>%
-    tibble::as_tibble()
+    ungroup() %>%
+    mutate(month = lubridate::floor_date(week, unit = "month")) %>%
+    select(-week) %>%
+    filter(month >= mod_obj$BeginDate & month <= mod_obj$EndDate) %>%
+    group_by(vehicle, region, month) %>%
+    summarise_all(.funs = function(x) mean(x, na.rm = TRUE)) %>%
+    as_tibble()
 
   # Adding residuals to get correlation
   weeklyDF$resids <- mod_obj$Model$residuals

@@ -24,7 +24,7 @@ Load_FMIData <- function(mod_obj, input_file_FMIData) {
       "alt", "arm", "fro", "lef", "max", "mur",
       "nv", "pth", "rge", "sen", "ttn", "ver"
     )) %>%
-    dplyr::mutate(week = ymd(week))
+    dplyr::mutate(week = lubridate::ymd(week))
 
   # Ftable <-
   #   reshape2::dcast(FMI, vehicle + week ~ var + type + tier,
