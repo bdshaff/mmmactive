@@ -19,17 +19,20 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
   NAMEPLATE <- mod_obj$NAMEPLATE
   nmp <- mod_obj$nmp
 
+  BEGINDATE <- mod_obj$BeginDate
+  ENDDATE <- mod_obj$EndDate
+
   Stable <-
     readr::read_csv(input_file_SpendData) %>%
     dplyr::mutate(Date = mdy(Date)) %>%
     dplyr::filter(
       Model == NAMEPLATE,
-      Date >= "2018-10-01",
-      Date <= "2019-09-01"
+      Date >= BEGINDATE,
+      Date <= ENDDATE
     ) %>%
     dplyr::mutate(
       FY = "FY19",
-      media_agg = `Media Channel`,
+      media_agg = Categorization,
       model_agg = nmp
     ) %>%
     dplyr::group_by(FY, model_agg, media_agg) %>%
