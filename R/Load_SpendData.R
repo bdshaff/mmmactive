@@ -31,7 +31,7 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
       Date <= ENDDATE
     ) %>%
     dplyr::mutate(
-      FY = "FY19",
+      FY = year(Date - months(3)),
       media_agg = Categorization,
       model_agg = nmp
     ) %>%
