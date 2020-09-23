@@ -22,7 +22,7 @@ Load_FMIData <- function(mod_obj, input_file_FMIData) {
     dplyr::filter(region == "100") %>%
     dplyr::filter(vehicle %in% c(
       "alt", "arm", "fro", "lef", "max", "mur",
-      "nv", "pth", "rge", "sen", "ttn", "ver"
+      "nv", "pth", "rge", "sen", "ttn", "ver","kcs"
     )) %>%
     dplyr::mutate(week = lubridate::ymd(week))
 
