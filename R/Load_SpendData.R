@@ -22,7 +22,7 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
   BEGINDATE <- mod_obj$BeginDate
   ENDDATE <- mod_obj$EndDate
 
-  Stable <-
+  BigStable <-
     readr::read_csv(input_file_SpendData) %>%
     dplyr::mutate(Date = mdy(Date)) %>%
     dplyr::filter(
@@ -34,10 +34,14 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
       FY = year(Date - months(3)),
       media_agg = Categorization,
       model_agg = nmp
-    ) %>%
+    )
+
+  Stable <-
+    BigStable %>%
     dplyr::group_by(FY, model_agg, media_agg) %>%
     dplyr::summarise(Spend = sum(Spend, na.rm = TRUE))
 
+  mod_obj$spend_data <- spend_data
   mod_obj$Stable <- Stable
   return(mod_obj)
 }
