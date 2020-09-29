@@ -41,7 +41,7 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
     dplyr::group_by(FY, model_agg, media_agg) %>%
     dplyr::summarise(Spend = sum(Spend, na.rm = TRUE))
 
-  mod_obj$spend_data <- spend_data
+  mod_obj$spend_data <- BigStable
   mod_obj$Stable <- Stable
   return(mod_obj)
 }
