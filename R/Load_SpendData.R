@@ -24,14 +24,14 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
 
   BigStable <-
     readr::read_csv(input_file_SpendData) %>%
-    dplyr::mutate(Date = mdy(Date)) %>%
+    #dplyr::mutate(Date = mdy(Date)) %>%
     dplyr::filter(
       Model == NAMEPLATE,
       Date >= BEGINDATE,
       Date <= ENDDATE
     ) %>%
     dplyr::mutate(
-      FY = year(Date - months(3)),
+      #FY = year(Date - months(3)),
       media_agg = Categorization,
       model_agg = nmp
     )
