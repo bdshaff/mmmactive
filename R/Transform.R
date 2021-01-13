@@ -29,7 +29,7 @@ Transform <- function(mod_obj, print = TRUE) {
   DepVar <- spec$Trans_Variable[spec$Variable_Type == "Dependent"]
 
 
-  if (is.null(cross_section)) {
+  if (cross_section == "none") {
     print("no crossection")
     if (length(data_input) == 1) {
       data_input <- data_input[[1]]
@@ -79,7 +79,7 @@ Transform <- function(mod_obj, print = TRUE) {
       mod_obj$data_transformed <- DFFS
       mod_obj$data <- TransformTempJoin(data_input, DFFS, trans_variable)
 
-      if(kpi == "sales"){
+      if(kpi %in% c("sales")){
         mod_obj$data =
           mod_obj$data %>%
           dplyr::group_by(!!rlang::sym(cross_section)) %>%

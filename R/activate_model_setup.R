@@ -21,13 +21,14 @@ activate_model_setup <- function(mod_obj, input_file_ModelSetup) {
   mod_obj$Time <- Model_setup$Value[Model_setup$Parameter == "Time"]
   mod_obj$BeginDate <- lubridate::mdy(Model_setup$Value[Model_setup$Parameter == "BeginDate"])
   mod_obj$EndDate <- lubridate::mdy(Model_setup$Value[Model_setup$Parameter == "EndDate"])
-  mod_obj$SimStart <- lubridate::mdy(Model_setup$Value[Model_setup$Parameter == "SimStart"])
-  mod_obj$SimEnd <- lubridate::mdy(Model_setup$Value[Model_setup$Parameter == "SimEnd"])
-  mod_obj$mroi_step <- as.numeric(Model_setup$Value[Model_setup$Parameter == "Mroi"])
   mod_obj$cs <- Model_setup$Value[Model_setup$Parameter == "Crossection"]
   mod_obj$kpi <- Model_setup$Value[Model_setup$Parameter == "kpi"]
-  mod_obj$NMP <- Model_setup$Value[Model_setup$Parameter == "NMP"]
-  mod_obj$nmp <- Model_setup$Value[Model_setup$Parameter == "nmp"]
   mod_obj$NAMEPLATE <- Model_setup$Value[Model_setup$Parameter == "NAMEPLATE"]
+  mod_obj$NMP <- Model_setup$Value[Model_setup$Parameter == "NMP"]
+  mod_obj$nmp <- unlist(str_split(Model_setup$Value[Model_setup$Parameter == "nmp"],","))
+  mod_obj$rgn <- unlist(str_split(Model_setup$Value[Model_setup$Parameter == "rgn"],","))
+
+  mod_obj$data_group_selector <- list(nameplate = mod_obj$nmp, region = mod_obj$rgn)
+
   return(mod_obj)
 }
