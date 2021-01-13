@@ -16,19 +16,19 @@ TransformTempJoin <- function(data_input, DFFS, trans_variable) {
   weeklyDF <-
     DF$weekly %>%
     dplyr::mutate(month = floor_date(week, unit = "month")) %>%
-    dplyr::group_by(vehicle, region, month) %>%
+    dplyr::group_by(nameplate, region, month) %>%
     dplyr::select(tidyselect::one_of(trans_variable)) %>%
     dplyr::summarise_all(.funs = function(x) mean(x, na.rm = TRUE)) %>%
-    dplyr::group_by(vehicle, region, month)
+    dplyr::group_by(nameplate, region, month)
 
 
   monthlyDF <-
     DF$monthly %>%
     dplyr::mutate(month = floor_date(month, unit = "month")) %>%
-    dplyr::group_by(vehicle, region, month) %>%
+    dplyr::group_by(nameplate, region, month) %>%
     dplyr::select(tidyselect::one_of(trans_variable)) %>%
     dplyr::summarise_all(.funs = function(x) sum(x, na.rm = TRUE)) %>%
-    dplyr::group_by(vehicle, region, month)
+    dplyr::group_by(nameplate, region, month)
 
   joinedDF <- monthlyDF %>% dplyr::full_join(weeklyDF)
 
