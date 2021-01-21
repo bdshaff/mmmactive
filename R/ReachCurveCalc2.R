@@ -21,32 +21,25 @@ ReachCurveCalc2 <- function(Values, input, fit_curves){
     Period <- as.integer(input[6, col])
     Decay <- as.integer(input[7, col])
     Channel <- as.character(input[11, col])
+    Decay <- Decay / 100
+    gnObs <- 104
+    t <- 1
+
+    ################################################################################################
+    ################################################################################################
+    ################################################################################################
 
     alpha_beta_gamma = get_alpha_beta_gamma(channel_name = Channel, fit_curves = fit_curves)
 
 
-    Decay <- Decay / 100
-    gaGRPs <- Values[1:104, col]
-    gnObs <- 104
-    t <- 1
-    # Repeat GRPs
-    YagoGRPs <- gaGRPs[1:52, t] #year ago
-    CYGRPs <- gaGRPs[53:104, t] #current year
-    YagoGRPs <- OneStepBrandScience::reprow(YagoGRPs, 101) #year ago
-    CYGRPs <- OneStepBrandScience::reprow(CYGRPs, 101) #current year
-    YagoGRPs <- matrix(unlist(YagoGRPs), nrow = 52, byrow = FALSE) #year ago
-    CYGRPs <- matrix(unlist(CYGRPs), nrow = 52, byrow = FALSE) #current year
-    # Repeat %
-    Percents <- seq(from = 0, to = 5, by = 0.05)
-    Per <- as.data.frame(t(Percents))
-    allper <- OneStepBrandScience::reprow(Per, 52)
-    allper <- data.frame(matrix(unlist(allper), nrow = 52, byrow = FALSE))
-    allper1 <- data.frame(matrix(1, nrow = 52, ncol = 101))
-    # Multiply GRPs and %
-    CYGRPs1 <- CYGRPs * allper
-    YagoGRPs1 <- YagoGRPs * allper1
-    total <- rbind(YagoGRPs1, CYGRPs1)
-    names(total) <- Per
+    grps_column <- Values[1:104, col]
+    grps_matrix_previous_year = matrix(rep(grps_column[1:52, 1][[1]], 101), nrow = 52)
+    grps_matrix_current_year = matrix(rep(grps_column[53:104, 1][[1]], 101), nrow = 52)
+    percents_matrix = matrix(rep(seq(from = 0, to = 5, by = 0.05),each = 52), nrow = 52)
+    ones_matrix = matrix(1, ncol = 101, nrow = 52)
+
+    total = as.data.frame(rbind(grps_matrix_previous_year * ones_matrix, grps_matrix_current_year * percents_matrix))
+    names(total) = seq(from = 0, to = 5, by = 0.05)
 
 
     ################################################################################################
