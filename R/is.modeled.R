@@ -5,7 +5,7 @@
 #' @export
 
 is.modeled <- function(x){
-  nms <- c("Model", "lmModel")
+  nms <- c("Model")
   test <- all(nms %in% attributes(x)$names)
   if(!test){
     warning(paste(nms[!(nms %in% attributes(x)$names)],": missing element \n"), immediate. = TRUE)

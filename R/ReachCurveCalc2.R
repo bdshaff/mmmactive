@@ -32,14 +32,14 @@ ReachCurveCalc2 <- function(Values, input, fit_curves){
     # Repeat GRPs
     YagoGRPs <- gaGRPs[1:52, t] #year ago
     CYGRPs <- gaGRPs[53:104, t] #current year
-    YagoGRPs <- reprow(YagoGRPs, 101) #year ago
-    CYGRPs <- reprow(CYGRPs, 101) #current year
+    YagoGRPs <- OneStepBrandScience::reprow(YagoGRPs, 101) #year ago
+    CYGRPs <- OneStepBrandScience::reprow(CYGRPs, 101) #current year
     YagoGRPs <- matrix(unlist(YagoGRPs), nrow = 52, byrow = FALSE) #year ago
     CYGRPs <- matrix(unlist(CYGRPs), nrow = 52, byrow = FALSE) #current year
     # Repeat %
     Percents <- seq(from = 0, to = 5, by = 0.05)
     Per <- as.data.frame(t(Percents))
-    allper <- reprow(Per, 52)
+    allper <- OneStepBrandScience::reprow(Per, 52)
     allper <- data.frame(matrix(unlist(allper), nrow = 52, byrow = FALSE))
     allper1 <- data.frame(matrix(1, nrow = 52, ncol = 101))
     # Multiply GRPs and %
