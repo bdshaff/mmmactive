@@ -43,11 +43,9 @@ Transform2 <- function(mod_obj, print = TRUE) {
     mod_obj$data <- TransformTempJoin(data_input, transformed_data, trans_variable)
   }
 
-<<<<<<< HEAD
+
   if (kpi %in% c("sales_div_tiv","ma","oao","pi","pc","aa","src","web")) {
-=======
-  if (kpi %in% c("sales","ma","oao","pi","pc","aa","src","web")) {
->>>>>>> 950ed1939776f0fbe77ca0675aef0e8af62635c5
+
       mod_obj$data <-
         mod_obj$data %>%
         dplyr::group_by(!!rlang::sym(cross_section)) %>%
