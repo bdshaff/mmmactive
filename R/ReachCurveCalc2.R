@@ -31,6 +31,7 @@ ReachCurveCalc2 <- function(Values, input, fit_curves){
 
     alpha_beta_gamma = get_alpha_beta_gamma(channel_name = Channel, fit_curves = fit_curves)
 
+    percent_range = seq(from = 0, to = 5, by = 0.05)
 
     grps_column <- Values[1:104, col]
     grps_matrix_previous_year = matrix(rep(grps_column[1:52, 1][[1]], 101), nrow = 52)
@@ -39,7 +40,9 @@ ReachCurveCalc2 <- function(Values, input, fit_curves){
     ones_matrix = matrix(1, ncol = 101, nrow = 52)
 
     total = as.data.frame(rbind(grps_matrix_previous_year * ones_matrix, grps_matrix_current_year * percents_matrix))
-    names(total) = seq(from = 0, to = 5, by = 0.05)
+    names(total) = percent_range
+
+    Per = as.data.frame(t(percent_range))
 
 
     ################################################################################################
