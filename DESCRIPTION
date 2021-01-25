@@ -35,7 +35,8 @@ Imports:
     plotly,
     car,
     RcppRoll,
-    reshape2
+    reshape2,
+    onls
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,

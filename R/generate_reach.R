@@ -17,9 +17,13 @@ generate_reach = function(reach_curve_spec_row, grps_data, fit_curves){
   spend_range = reach_curve_spec_row$spend * seq(from = 0, to = 5, by = 0.05)
 
   res = data.frame(spend_range, reach_curve, contribution_curve)
-  names(res) <- str_c(curve_name, " ", c("Spend", "Reach", "Contribution"))
+  names(res) <- c("Spend", "Reach", "Contribution")
   print(paste(curve_name, "done"))
 
-  return(res)
+  return(
+    list(name = curve_name,
+         reach_curve_spec_row = reach_curve_spec_row,
+         reach = res)
+         )
 
 }
