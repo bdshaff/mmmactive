@@ -14,6 +14,17 @@
 
 Decomp2 <- function(mod_obj) {
 
+  if(mod_obj$Model$method == "bayesian_linear_regression"){
+    model_matrix = mod_obj$Model$mod_matrix
+    coefs = mod_obj$Model$coefs$Estimate
+    names(coefs) = mod_obj$Model$coefs$Variables
+    fitted_values = mod_obj$Model$fitted_value
+  }else if(mod_obj$Model$method == "linear_regression"){
+    model_matrix = model.matrix(mod_obj$Model)
+    coefs = mod_obj$Model$coefficients
+    fitted_values = mod_obj$Model$fitted.values
+  }
+
   if (!is.modeled(mod_obj)) {
     stop("mod_obj must have a fitted model to run model decomposition.")
   }
@@ -22,15 +33,15 @@ Decomp2 <- function(mod_obj) {
     dplyr::filter(Variable_Type == "Dependent") %>%
     dplyr::pull(Trans_Variable)
 
-  dims <- dim(model.matrix(mod_obj$Model))
-  coef_matrix <- matrix(rep(mod_obj$Model$coefficients, each = dims[1]), nrow = dims[1], ncol = dims[2])
-  contributions_matrix <- coef_matrix * model.matrix(mod_obj$Model)
+  dims <- dim(model_matrix)
+  coef_matrix <- matrix(rep(coefs, each = dims[1]), nrow = dims[1], ncol = dims[2])
+  contributions_matrix <- coef_matrix * model_matrix
 
-  all.equal(rowSums(contributions_matrix), mod_obj$Model$fitted.values)
+  #all.equal(rowSums(contributions_matrix), mod_obj$Model$fitted.values)
 
-  percent_contributions_matrix <- contributions_matrix / mod_obj$Model$fitted.values
+  percent_contributions_matrix <- contributions_matrix / fitted_values
 
-  #sum(rowSums(percent_contributions_matrix) == 1) == 0
+  #sum(rowSums(percent_contributions_matrix)) == nrow(percent_contributions_matrix)
 
 
   if(mod_obj$kpi == "sales_div_tiv"){
@@ -55,7 +66,7 @@ Decomp2 <- function(mod_obj) {
       )
   }
 
-  decomposition_matrix$fitted <- mod_obj$Model$fitted.values
+  decomposition_matrix$fitted <- fitted_values
   decomposition_matrix$residuals <- mod_obj$Model$residuals
 
   if(mod_obj$kpi == "sales_div_tiv"){

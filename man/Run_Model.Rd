@@ -4,7 +4,7 @@
 \alias{Run_Model}
 \title{Execute Model Fitting}
 \usage{
-Run_Model(mod_obj, method = "linear_regression")
+Run_Model(mod_obj, method = NULL)
 }
 \arguments{
 \item{mod_obj}{- model object}

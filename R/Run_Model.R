@@ -195,6 +195,7 @@ Run_Model <- function(mod_obj, method = NULL) {
       full_b <- dplyr::left_join(full_b, bayes_mod_obj$coefficients)
     }
 
+    bayes_mod_obj$coefs <- bayes_mod_obj$coefficients
     bayes_mod_obj$coefficients <- full_b
     mod_obj$Model <- bayes_mod_obj
     mod_obj$Model$mod_matrix <- mod_matrix
