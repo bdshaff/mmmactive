@@ -16,30 +16,22 @@ Load_SpendData <- function(mod_obj, input_file_SpendData) {
     stop("mod_obj missing group selector needed to load data.")
   }
 
-  NAMEPLATE <- mod_obj$NAMEPLATE
-  nmp <- mod_obj$nmp
 
   BEGINDATE <- mod_obj$BeginDate
   ENDDATE <- mod_obj$EndDate
 
   BigStable <-
     readr::read_csv(input_file_SpendData) %>%
-    #dplyr::mutate(Date = mdy(Date)) %>%
     dplyr::filter(
-      Model == NAMEPLATE,
-      Date >= BEGINDATE,
-      Date <= ENDDATE
-    ) %>%
-    dplyr::mutate(
-      #FY = year(Date - months(3)),
-      media_agg = Categorization,
-      model_agg = nmp
+      nameplate %in% mod_obj$data_group_selector$nameplate,
+      month >= mod_obj$BeginDate,
+      month <= mod_obj$EndDate
     )
 
   Stable <-
     BigStable %>%
-    dplyr::group_by(FY, model_agg, media_agg) %>%
-    dplyr::summarise(Spend = sum(Spend, na.rm = TRUE))
+    dplyr::group_by(FY, AggregateVariable) %>%
+    dplyr::summarise(spend = sum(Spend, na.rm = TRUE))
 
   mod_obj$spend_data <- BigStable
   mod_obj$Stable <- Stable
