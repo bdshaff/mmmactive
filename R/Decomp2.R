@@ -12,7 +12,7 @@
 #' @return mod_obj
 #' @export
 
-Decomp2 <- function(mod_obj) {
+Decomp2 <- function(mod_obj, min_ref_var_names = NULL) {
 
   if(mod_obj$Model$method == "bayesian_linear_regression"){
     model_matrix = mod_obj$Model$mod_matrix
@@ -82,12 +82,32 @@ Decomp2 <- function(mod_obj) {
 
   if(mod_obj$kpi == "sales_div_tiv"){
     decomposition_matrix$pred <- decomposition_matrix$fitted * decomposition_matrix$means_by * pull(decomposition_matrix[, "sales_tiv"])
+
+    if(!is.null(min_ref_var_names)){
+      for(i in 1:length(min_ref_var_names)){
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(`(Intercept)` = `(Intercept)` + min(!!sym(min_ref_var_names[i])),
+                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
+      }
+    }
+
     decomposition_table <-
       decomposition_matrix %>%
       select(-c(!!sym(response_var), pred, means_by, fitted, residuals)) %>%
       pivot_longer(-c(!!sym(mod_obj$cs), !!sym(mod_obj$Time), !!sym(mod_obj$kpi), sales, sales_tiv), names_to = "variable", values_to = "contribution")
   }else{
     decomposition_matrix$pred <- decomposition_matrix$fitted * decomposition_matrix$means_by
+
+    if(!is.null(min_ref_var_names)){
+      for(i in 1:length(min_ref_var_names)){
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(`(Intercept)` = `(Intercept)` + min(!!sym(min_ref_var_names[i])),
+                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
+      }
+    }
+
     decomposition_table <-
       decomposition_matrix %>%
       select(-c(!!sym(response_var), pred, means_by, fitted, residuals)) %>%
@@ -97,7 +117,7 @@ Decomp2 <- function(mod_obj) {
   decomposition_table_categorized =
     decomposition_table %>%
     left_join(mod_obj$spec[,c("Trans_Variable","AggregateVariable","Variable_Type")], by = c("variable" = "Trans_Variable")) %>%
-    replace_na(list("AggregateVariable" = "BASE", "Variable_Type" = "Trend"))
+    replace_na(list("AggregateVariable" = "Base", "Variable_Type" = "Trend"))
 
   mod_obj$Decomp = list(decomposition_table = decomposition_table_categorized,
                         decomposition_matrix = decomposition_matrix)
