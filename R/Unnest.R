@@ -48,14 +48,18 @@ Unnest <- function(sales_mod_obj, sub_mod_obj){
   }
 
   #Contributions from these variables in the submodel will be distrubuted into the unnested variable
-  submodel_unnest_vars = sub_mod_obj$spec[sub_mod_obj$spec$Variable_Type %in% c("Marketing","Trend") & sub_mod_obj$spec$Orig_Variable != "Intercept","Trans_Variable"][[1]]
+  submodel_unnest_vars = sub_mod_obj$spec[sub_mod_obj$spec$Variable_Type %in% c("Marketing","Trend"),"Trans_Variable"][[1]]
 
 
   to_distribute = submodel_contributions[submodel_contributions$nameplate == nmp, names(submodel_contributions) %in% c(submodel_unnest_vars)]
   to_distribute_pct = to_distribute/rowSums(to_distribute)
   names(to_distribute_pct) = str_c(sub_mod_obj$kpi, "_sub_",names(to_distribute_pct))
+  names(to_distribute_pct)[str_detect(names(to_distribute_pct),"Intercept")] = submodel_response_var
   to_distribute_pct = cbind(submodel_contributions[submodel_contributions$nameplate == nmp, names(submodel_contributions) %in% c(sub_mod_obj$Time)],to_distribute_pct)
 
+  if(sum(to_distribute_pct[,submodel_response_var] < 0) > 0){
+    message(str_c(submodel_response_var," is not everywhere positive contributing in submodel. May cause negative contributions. Check submodel Intercept."))
+  }
 
   to_unneset = salesmodel_contributions %>% select(!!sym(sales_mod_obj$cs), !!sym(sales_mod_obj$Time)) %>% left_join(to_distribute_pct)
   unneseted_contributions = to_unneset[,-c(1,2)] * contributions_to_unnest

@@ -8,8 +8,14 @@
 
 Reach_Curve_Spec = function(mod_obj, fiscal_year){
 
+  if(!is.null(mod_obj$DecompUnnested)){
+    decomposition_table = mod_obj$DecompUnnested$unneseted_decomposition_table
+  }else{
+    decomposition_table = mod_obj$Decomp$decomposition_table
+  }
+
   reach_curve_spec =
-    mod_obj$Decomp$decomposition_table %>%
+    decomposition_table %>%
     filter(Variable_Type == "Marketing",
            !str_detect(variable, "halo")) %>%
     mutate(FY = str_sub(month - months(3), 1, 4),

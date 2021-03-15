@@ -21,6 +21,7 @@ Decomp2 <- function(mod_obj, min_ref_var_names = NULL) {
     fitted_values = mod_obj$Model$fitted_value
   }else if(mod_obj$Model$method == "linear_regression"){
     model_matrix = model.matrix(mod_obj$Model)
+    colnames(model_matrix)[str_detect(colnames(model_matrix),"(Intercept)")] = "Intercept"
     coefs = mod_obj$Model$coefficients
     fitted_values = mod_obj$Model$fitted.values
   }
@@ -87,7 +88,7 @@ Decomp2 <- function(mod_obj, min_ref_var_names = NULL) {
       for(i in 1:length(min_ref_var_names)){
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(`(Intercept)` = `(Intercept)` + min(!!sym(min_ref_var_names[i])),
+          mutate(Intercept = Intercept + min(!!sym(min_ref_var_names[i])),
                  !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
       }
     }
@@ -103,7 +104,7 @@ Decomp2 <- function(mod_obj, min_ref_var_names = NULL) {
       for(i in 1:length(min_ref_var_names)){
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(`(Intercept)` = `(Intercept)` + min(!!sym(min_ref_var_names[i])),
+          mutate(Intercept = Intercept + min(!!sym(min_ref_var_names[i])),
                  !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
       }
     }

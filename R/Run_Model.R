@@ -67,6 +67,7 @@ Run_Model <- function(mod_obj, method = NULL) {
 
   if(method == "linear_regression"){
 
+    names(lmModel$coefficients)[str_detect(names(lmModel$coefficients),"(Intercept)")] = "Intercept"
     mod_obj$Model <- lmModel
     mod_obj$Model$eq <- eq_lm
 
