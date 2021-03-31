@@ -52,18 +52,30 @@ Run_Model <- function(mod_obj, method = NULL) {
 
 
   if(nrow(unique(x[,cs])) > 1){
-    eq_lm <- paste(IV[!IV %in% "Intercept"], collapse = " + ")
+    eq_lm <- paste(IV, collapse = " + ")
     eq_lm <- paste(eq_lm, " + ", cs)
-    eq_lm <- paste(DepVar, " ~ ", eq_lm)
+    eq_lm <- paste(DepVar, " ~ -1 +", eq_lm)
     eq_lm <- stats::as.formula(eq_lm)
   }else if(nrow(unique(x[,cs])) == 1){
-    eq_lm <- paste(IV[!IV %in% "Intercept"], collapse = " + ")
-    eq_lm <- paste(DepVar, " ~ ", eq_lm)
+    eq_lm <- paste(IV, collapse = " + ")
+    eq_lm <- paste(DepVar, " ~ -1 +", eq_lm)
     eq_lm <- stats::as.formula(eq_lm)
   }
 
   lmModel <- stats::lm(eq_lm, data = x)
 
+  if(nrow(unique(x[,cs])) > 1){
+    eq_lm2 <- paste(IV[!IV %in% "Intercept"], collapse = " + ")
+    eq_lm2 <- paste(eq_lm2, " + ", cs)
+    eq_lm2 <- paste(DepVar, " ~ +", eq_lm2)
+    eq_lm2 <- stats::as.formula(eq_lm2)
+  }else if(nrow(unique(x[,cs])) == 1){
+    eq_lm2 <- paste(IV[!IV %in% "Intercept"], collapse = " + ")
+    eq_lm2 <- paste(DepVar, " ~ ", eq_lm2)
+    eq_lm2 <- stats::as.formula(eq_lm2)
+  }
+
+  lmModel2 <- stats::lm(eq_lm2, data = x)
 
   if(method == "linear_regression"){
 
@@ -211,10 +223,10 @@ Run_Model <- function(mod_obj, method = NULL) {
 
 
   if(length(IV) > 2){
-    mod_obj$Model$VIF <- car::vif(lmModel)
+    mod_obj$Model$VIF <- car::vif(lmModel2)
   }
 
-  mod_obj$Model$DW <- broom::tidy(car::durbinWatsonTest(lmModel))
+  mod_obj$Model$DW <- broom::tidy(car::durbinWatsonTest(lmModel2))
   mod_obj$Model$method <- method
 
   return(mod_obj)

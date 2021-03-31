@@ -44,7 +44,7 @@ Transform2 <- function(mod_obj, print = TRUE) {
   }
 
 
-  if (kpi %in% c("sales_div_tiv","ma","oao","pi","pc","aa","src","web")) {
+  if (kpi %in% c("sales_div_tiv","ma","oao","pi","pc","aa","src","web_visits")) {
 
       mod_obj$data <-
         mod_obj$data %>%
