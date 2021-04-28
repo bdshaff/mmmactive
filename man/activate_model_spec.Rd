@@ -4,12 +4,18 @@
 \alias{activate_model_spec}
 \title{Activate Model Specification}
 \usage{
-activate_model_spec(mod_obj, input_file_ModelSpec)
+activate_model_spec(
+  mod_obj,
+  input_file_ModelSpec = NULL,
+  model_spec_table = NULL
+)
 }
 \arguments{
 \item{mod_obj}{- model object}
 
 \item{input_file_ModelSpec}{- file path to ModelSpec.csv}
+
+\item{model_spec_table}{- model_spec_table}
 }
 \value{
 mod_obj

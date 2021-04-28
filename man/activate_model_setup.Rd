@@ -4,12 +4,18 @@
 \alias{activate_model_setup}
 \title{Activate Model Setup}
 \usage{
-activate_model_setup(mod_obj, input_file_ModelSetup)
+activate_model_setup(
+  mod_obj,
+  input_file_ModelSetup = NULL,
+  model_setup_table = NULL
+)
 }
 \arguments{
 \item{mod_obj}{- model object}
 
 \item{input_file_ModelSetup}{- file path to ModelSetup.csv}
+
+\item{model_setup_table}{- output from `generate_model_setup()`}
 }
 \value{
 mod_obj
