@@ -20,7 +20,7 @@ Need the secret token to download from private repo
 
 -    Handling Unnested models
 
-    -   Response
+-   Response
 
 -   Support for National and Regional Response Curves
 
@@ -43,6 +43,8 @@ Need the secret token to download from private repo
 `activate_model_spec`
 
 `update_model_spec`
+
+`activate_dummy_spec`
 
 ## Data Loading
 
@@ -73,6 +75,8 @@ Need the secret token to download from private repo
 `TransformTemp`
 
 `TransformTempJoin`
+
+`Add_Dummy3`
 
 ## Modeling
 
