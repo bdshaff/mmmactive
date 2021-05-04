@@ -21,7 +21,7 @@ Add_Dummy3 = function(mod_obj){
   for(i in seq_along(rownames(dummy_spec))){
 
     dummy_spec_row = dummy_spec[i,]
-    cat("Adding dummy:",paste(dummy_spec_row),"\n")
+    cat("Adding dummy:",paste(apply(dummy_spec_row, 2, as.character)),"\n")
 
     from = dummy_spec_row$from
     to = dummy_spec_row$to

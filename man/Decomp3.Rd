@@ -4,16 +4,14 @@
 \alias{Decomp3}
 \title{Model Decomposition and Contribution Calculations}
 \usage{
-Decomp3(mod_obj, min_ref_var_names = NULL)
+Decomp3(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL)
 }
 \arguments{
 \item{mod_obj}{- model object}
 
-\item{min_ref}{- vector of variable indexes}
+\item{min_ref_var_names}{- vector of variable indexes}
 
-\item{max_ref}{- vector of variable indexes}
-
-\item{mean_ref}{- vector of variable indexes}
+\item{mean_ref_var_names}{- vector of variable indexes}
 }
 \value{
 mod_obj
