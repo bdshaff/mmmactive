@@ -6,6 +6,26 @@ Need the secret token to download from private repo
 
     devtools::install_github("bdshaff/mmmactive", auth_token = token)
 
+# RoadMap
+
+-   Add_Dummy - function to conveniently handle tasks of adding, removing, editing dummy variables to the \$data and spec
+
+-   Handling models with randomized variables
+
+    -   Decomp
+
+    -   Unnesting
+
+    -   Response
+
+-    Handling Unnested models
+
+    -   Response
+
+-   Support for National and Regional Response Curves
+
+-   Support for Aggregate Variable level Response generation
+
 # Functions
 
 ## Create
