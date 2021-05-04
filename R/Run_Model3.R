@@ -118,7 +118,9 @@ Run_Model3 <- function(mod_obj, method = NULL) {
     bfit <- stan_glm(eq_lm,
                      data = x,
                      prior_intercept = normal(intercept_prior_mean, intercept_prior_sd),
-                     prior = normal(prior_locations, prior_scales))
+                     prior = normal(prior_locations, prior_scales),
+                     cores = parallel::detectCores(),
+                     seed = 12345)
 
 
     mod_obj$Model <- bfit

@@ -4,15 +4,14 @@
 #' The format of the output is compatible with the legacy reach generation function.
 #'
 #' @param mod_obj - model object
-#' @param min_ref - vector of variable indexes
-#' @param max_ref - vector of variable indexes
-#' @param mean_ref - vector of variable indexes
+#' @param min_ref_var_names - vector of variable indexes
+#' @param mean_ref_var_names - vector of variable indexes
 #'
 #' @importFrom magrittr %>%
 #' @return mod_obj
 #' @export
 
-Decomp3 = function(mod_obj, min_ref_var_names = NULL) {
+Decomp3 = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) {
 
   if(mod_obj$Model$method == "bayesian_linear_regression"){
     model_matrix = mod_obj$Model$mod_matrix
@@ -90,14 +89,32 @@ Decomp3 = function(mod_obj, min_ref_var_names = NULL) {
   if(mod_obj$kpi == "sales_div_tiv"){
     decomposition_matrix$pred <- decomposition_matrix$fitted * decomposition_matrix$means_by * pull(decomposition_matrix[, "sales_tiv"])
 
-    # if(!is.null(min_ref_var_names)){
-    #   for(i in 1:length(min_ref_var_names)){
-    #     decomposition_matrix  =
-    #       decomposition_matrix %>%
-    #       mutate(Intercept = Intercept + min(!!sym(min_ref_var_names[i])),
-    #              !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
-    #   }
-    # }
+    if(!is.null(min_ref_var_names)){
+      decomposition_matrix$min_ref_collect = 0
+      for(i in 1:length(min_ref_var_names)){
+
+        min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(min_ref_collect = min_ref_collect + !!sym(min_ref_var_names[i]) - min_val,
+                 !!sym(min_ref_var_names[i]) := min_val)
+      }
+    }
+
+    if(!is.null(mean_ref_var_names)){
+      decomposition_matrix$mean_ref_collect = 0
+      for(i in 1:length(mean_ref_var_names)){
+
+        mean_val = mean(decomposition_matrix[,mean_ref_var_names[i]][[1]], na.rm = TRUE)
+
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(mean_ref_collect = mean_ref_collect + !!sym(mean_ref_var_names[i]) - mean_val,
+                 !!sym(mean_ref_var_names[i]) := mean_val)
+      }
+    }
+
 
     decomposition_table <-
       decomposition_matrix %>%
@@ -106,14 +123,31 @@ Decomp3 = function(mod_obj, min_ref_var_names = NULL) {
   }else{
     decomposition_matrix$pred <- decomposition_matrix$fitted * decomposition_matrix$means_by
 
-    # if(!is.null(min_ref_var_names)){
-    #   for(i in 1:length(min_ref_var_names)){
-    #     decomposition_matrix  =
-    #       decomposition_matrix %>%
-    #       mutate(Intercept = Intercept + min(!!sym(min_ref_var_names[i])),
-    #              !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min(!!sym(min_ref_var_names[i])))
-    #   }
-    # }
+    if(!is.null(min_ref_var_names)){
+      decomposition_matrix$min_ref_collect = 0
+      for(i in 1:length(min_ref_var_names)){
+
+        min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(min_ref_collect = min_ref_collect + !!sym(min_ref_var_names[i]) - min_val,
+                 !!sym(min_ref_var_names[i]) := min_val)
+      }
+    }
+
+    if(!is.null(mean_ref_var_names)){
+      decomposition_matrix$mean_ref_collect = 0
+      for(i in 1:length(mean_ref_var_names)){
+
+        mean_val = mean(decomposition_matrix[,mean_ref_var_names[i]][[1]], na.rm = TRUE)
+
+        decomposition_matrix  =
+          decomposition_matrix %>%
+          mutate(mean_ref_collect = mean_ref_collect + !!sym(mean_ref_var_names[i]) - mean_val,
+                 !!sym(mean_ref_var_names[i]) := mean_val)
+      }
+    }
 
     decomposition_table <-
       decomposition_matrix %>%
