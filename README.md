@@ -8,8 +8,6 @@ Need the secret token to download from private repo
 
 # RoadMap
 
--   Add_Dummy - function to conveniently handle tasks of adding, removing, editing dummy variables to the \$data and spec
-
 -   Handling models with randomized variables
 
     -   Decomp
@@ -18,7 +16,7 @@ Need the secret token to download from private repo
 
     -   Response
 
--    Handling Unnested models
+-   Handling Unnested models
 
 -   Response
 
