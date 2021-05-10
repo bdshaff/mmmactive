@@ -8,14 +8,6 @@ Need the secret token to download from private repo
 
 # RoadMap
 
--   Handling models with randomized variables
-
-    -   Decomp
-
-    -   Unnesting
-
-    -   Response
-
 -   Handling Unnested models
 
 -   Response

@@ -157,6 +157,7 @@ Decomp3 = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL)
 
   decomposition_table_categorized =
     decomposition_table %>%
+    mutate(variable = str_remove(variable, "^[^_]*:")) %>%
     left_join(mod_obj$spec[,c("Trans_Variable","AggregateVariable","Variable_Type")], by = c("variable" = "Trans_Variable")) %>%
     replace_na(list("AggregateVariable" = "Base", "Variable_Type" = "Trend"))
 
