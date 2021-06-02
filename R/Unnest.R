@@ -9,7 +9,8 @@
 #' @return mod_obj
 #' @export
 
-Unnest <- function(sales_mod_obj, sub_mod_obj){
+Unnest = function(sales_mod_obj, sub_mod_obj){
+
 
   if(is.null(sales_mod_obj$DecompUnnested)){
     salesmodel_contributions = sales_mod_obj$Decomp$decomposition_matrix
@@ -38,7 +39,7 @@ Unnest <- function(sales_mod_obj, sub_mod_obj){
   if(is.null(sales_mod_obj$DecompUnnested$unnested_variables)){
     unnested_variables_list = c(submodel_response_var)
   }else{
-    unnested_variables_list = c(unnested_variables_list, submodel_response_var)
+    unnested_variables_list = c(sales_mod_obj$DecompUnnested$unnested_variables, submodel_response_var)
   }
 
   contributions_to_unnest = salesmodel_contributions[,submodel_response_var][[1]]
@@ -50,16 +51,28 @@ Unnest <- function(sales_mod_obj, sub_mod_obj){
   #Contributions from these variables in the submodel will be distrubuted into the unnested variable
   submodel_unnest_vars = sub_mod_obj$spec[sub_mod_obj$spec$Variable_Type %in% c("Marketing","Trend"),"Trans_Variable"][[1]]
 
+  pct_base =
+    sub_mod_obj$Decomp$decomposition_table %>%
+    group_by(nameplate, month, AggregateVariable) %>%
+    summarise(cont = sum(contribution)) %>%
+    mutate(tot = sum(cont)) %>%
+    filter(AggregateVariable == "Base") %>% mutate(pct_base = cont / tot) %>%
+    filter(nameplate == nmp) %>%
+    pull(pct_base)
+
+  if(sum(pct_base < 0) > 0){
+    warning("Negative Base in Submodel. Unnested Varible may be deflated and Contributions inflated.")
+  }
 
   to_distribute = submodel_contributions[submodel_contributions$nameplate == nmp, names(submodel_contributions) %in% c(submodel_unnest_vars)]
-  to_distribute_pct = to_distribute/rowSums(to_distribute)
+  to_distribute_pct = to_distribute/rowSums(to_distribute) * (1 - pct_base)
   names(to_distribute_pct) = str_c(sub_mod_obj$kpi, "_sub_",names(to_distribute_pct))
   names(to_distribute_pct)[str_detect(names(to_distribute_pct),"Intercept")] = submodel_response_var
   to_distribute_pct = cbind(submodel_contributions[submodel_contributions$nameplate == nmp, names(submodel_contributions) %in% c(sub_mod_obj$Time)],to_distribute_pct)
 
-  if(sum(to_distribute_pct[,submodel_response_var] < 0) > 0){
-    message(str_c(submodel_response_var," is not everywhere positive contributing in submodel. May cause negative contributions. Check submodel Intercept."))
-  }
+  # if(sum(to_distribute_pct[,submodel_response_var] < 0) > 0){
+  #   message(str_c(submodel_response_var," is not everywhere positive contributing in submodel. May cause negative contributions. Check submodel Intercept."))
+  # }
 
   to_unneset = salesmodel_contributions %>% select(!!sym(sales_mod_obj$cs), !!sym(sales_mod_obj$Time)) %>% left_join(to_distribute_pct)
   unneseted_contributions = to_unneset[,-c(1,2)] * contributions_to_unnest
@@ -67,7 +80,7 @@ Unnest <- function(sales_mod_obj, sub_mod_obj){
 
   unneseted_decomp_matrix =
     salesmodel_contributions %>%
-    select(-!!sym(submodel_response_var)) %>%
+    mutate(!!sym(submodel_response_var) := !!sym(submodel_response_var)*pct_base) %>%
     left_join(unneseted_contributions)
 
 
@@ -81,8 +94,16 @@ Unnest <- function(sales_mod_obj, sub_mod_obj){
   submodel_categorization$Trans_Variable = str_c(sub_mod_obj$kpi, "_sub_", submodel_categorization$Trans_Variable)
   submodel_categorization$Source_Model = sub_mod_obj$kpi
 
-  salesmodel_categorization = sales_mod_obj$spec[,c("Trans_Variable","AggregateVariable","Variable_Type")]
-  salesmodel_categorization$Source_Model = sales_mod_obj$kpi
+  if(is.null(sales_mod_obj$DecompUnnested)){
+    salesmodel_categorization = sales_mod_obj$spec[,c("Trans_Variable","AggregateVariable","Variable_Type")]
+    salesmodel_categorization$Source_Model = sales_mod_obj$kpi
+  }else{
+    salesmodel_categorization = sales_mod_obj$DecompUnnested$unneseted_decomposition_table[,c("variable","AggregateVariable","Variable_Type","Source_Model")]
+    salesmodel_categorization = salesmodel_categorization %>% rename(Trans_Variable = variable)
+  }
+
+
+
 
   categorization =
     bind_rows(salesmodel_categorization,
