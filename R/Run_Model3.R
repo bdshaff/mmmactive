@@ -9,7 +9,7 @@
 #'
 #' @export
 
-Run_Model3 <- function(mod_obj, method = NULL) {
+Run_Model3 <- function(mod_obj, method = NULL, default_priors = FALSE) {
   if (!is.activated(mod_obj)) {
     stop("mod_obj must be activated.")
   }
@@ -115,12 +115,19 @@ Run_Model3 <- function(mod_obj, method = NULL) {
     prior_locations <- prior_table[prior_table$assign != 0, "Prior_Mean"]
     prior_scales <- prior_table[prior_table$assign != 0, "Prior_SD"]
 
-    bfit <- stan_glm(eq_lm,
-                     data = x,
-                     prior_intercept = normal(intercept_prior_mean, intercept_prior_sd),
-                     prior = normal(prior_locations, prior_scales),
-                     cores = parallel::detectCores(),
-                     seed = 12345)
+    if(default_priors){
+      bfit <- stan_glm(eq_lm,
+                       data = x,
+                       cores = parallel::detectCores(),
+                       seed = 12345)
+    }else{
+      bfit <- stan_glm(eq_lm,
+                       data = x,
+                       prior_intercept = normal(intercept_prior_mean, intercept_prior_sd),
+                       prior = normal(prior_locations, prior_scales),
+                       cores = parallel::detectCores(),
+                       seed = 12345)
+    }
 
 
     mod_obj$Model <- bfit

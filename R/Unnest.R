@@ -99,7 +99,7 @@ Unnest = function(sales_mod_obj, sub_mod_obj){
     salesmodel_categorization$Source_Model = sales_mod_obj$kpi
   }else{
     salesmodel_categorization = sales_mod_obj$DecompUnnested$unneseted_decomposition_table[,c("variable","AggregateVariable","Variable_Type","Source_Model")]
-    salesmodel_categorization = salesmodel_categorization %>% rename(Trans_Variable = variable)
+    salesmodel_categorization = salesmodel_categorization %>% rename(Trans_Variable = variable) %>% unique()
   }
 
 
