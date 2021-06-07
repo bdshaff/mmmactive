@@ -4,7 +4,11 @@
 \alias{activate_dummy_spec}
 \title{Activate Dummy Specification}
 \usage{
-activate_dummy_spec(mod_obj, input_file_DummySpec)
+activate_dummy_spec(
+  mod_obj,
+  input_file_DummySpec = NULL,
+  dummy_spec_table = NULL
+)
 }
 \arguments{
 \item{mod_obj}{- model object}

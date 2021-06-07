@@ -4,7 +4,7 @@
 \alias{Run_Model3}
 \title{Execute Model Fitting}
 \usage{
-Run_Model3(mod_obj, method = NULL)
+Run_Model3(mod_obj, method = NULL, default_priors = FALSE)
 }
 \arguments{
 \item{mod_obj}{- model object}
