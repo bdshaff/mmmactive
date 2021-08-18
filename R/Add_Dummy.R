@@ -32,7 +32,7 @@ Add_Dummy = function(mod_obj){
     data =
       data %>%
       mutate(
-        !!dum_name := if_else(between(!!sym(ts), as.Date(from), as.Date(to)) & !!sym(cs) %in% str_split(css,",")[[1]], 1, 0)
+        !!dum_name := if_else(dplyr::between(!!sym(ts), as.Date(from), as.Date(to)) & !!sym(cs) %in% str_split(css,",")[[1]], 1, 0)
       )
 
     spec =
