@@ -93,12 +93,22 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
       decomposition_matrix$min_ref_collect = 0
       for(i in 1:length(min_ref_var_names)){
 
-        min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+        if(sum(decomposition_matrix[, min_ref_var_names[i]][[1]] > 0) == 0){
+          min_val = max(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
 
-        decomposition_matrix  =
-          decomposition_matrix %>%
-          mutate(min_ref_collect = min_ref_collect + min_val,
-                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+          decomposition_matrix  =
+            decomposition_matrix %>%
+            mutate(min_ref_collect = min_ref_collect + min_val,
+                   !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+        }else{
+          min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+
+          decomposition_matrix  =
+            decomposition_matrix %>%
+            mutate(min_ref_collect = min_ref_collect + min_val,
+                   !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+        }
+
       }
     }
 
@@ -127,12 +137,22 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
       decomposition_matrix$min_ref_collect = 0
       for(i in 1:length(min_ref_var_names)){
 
-        min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+        if(sum(decomposition_matrix[, min_ref_var_names[i]][[1]] > 0) == 0){
+          min_val = max(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
 
-        decomposition_matrix  =
-          decomposition_matrix %>%
-          mutate(min_ref_collect = min_ref_collect + min_val,
-                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+          decomposition_matrix  =
+            decomposition_matrix %>%
+            mutate(min_ref_collect = min_ref_collect + min_val,
+                   !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+        }else{
+          min_val = min(decomposition_matrix[,min_ref_var_names[i]][[1]], na.rm = TRUE)
+
+          decomposition_matrix  =
+            decomposition_matrix %>%
+            mutate(min_ref_collect = min_ref_collect + min_val,
+                   !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
+        }
+
       }
     }
 
