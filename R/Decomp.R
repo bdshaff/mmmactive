@@ -97,8 +97,8 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
 
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(min_ref_collect = min_ref_collect + !!sym(min_ref_var_names[i]) - min_val,
-                 !!sym(min_ref_var_names[i]) := min_val)
+          mutate(min_ref_collect = min_ref_collect + min_val,
+                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
       }
     }
 
@@ -110,8 +110,8 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
 
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(mean_ref_collect = mean_ref_collect + !!sym(mean_ref_var_names[i]) - mean_val,
-                 !!sym(mean_ref_var_names[i]) := mean_val)
+          mutate(mean_ref_collect = mean_ref_collect + mean_val,
+                 !!sym(mean_ref_var_names[i]) := !!sym(mean_ref_var_names[i]) - mean_val)
       }
     }
 
@@ -131,8 +131,8 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
 
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(min_ref_collect = min_ref_collect + !!sym(min_ref_var_names[i]) - min_val,
-                 !!sym(min_ref_var_names[i]) := min_val)
+          mutate(min_ref_collect = min_ref_collect + min_val,
+                 !!sym(min_ref_var_names[i]) := !!sym(min_ref_var_names[i]) - min_val)
       }
     }
 
@@ -144,8 +144,8 @@ Decomp = function(mod_obj, min_ref_var_names = NULL, mean_ref_var_names = NULL) 
 
         decomposition_matrix  =
           decomposition_matrix %>%
-          mutate(mean_ref_collect = mean_ref_collect + !!sym(mean_ref_var_names[i]) - mean_val,
-                 !!sym(mean_ref_var_names[i]) := mean_val)
+          mutate(mean_ref_collect = mean_ref_collect + mean_val,
+                 !!sym(mean_ref_var_names[i]) := !!sym(mean_ref_var_names[i]) - mean_val)
       }
     }
 
